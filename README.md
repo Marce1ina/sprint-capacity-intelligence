@@ -101,9 +101,16 @@ npx supabase start
 ```
 SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_KEY=<anon key from CLI output>
+TOKEN_ENCRYPTION_KEY=<generate with: openssl rand -base64 32>
 ```
 
-5. To stop the stack when done:
+5. Apply migrations and seed (creates `integration_tokens` table):
+
+```bash
+npx supabase db reset
+```
+
+6. To stop the stack when done:
 
 ```bash
 npx supabase stop
@@ -111,20 +118,41 @@ npx supabase stop
 
 The local Studio UI is available at `http://localhost:54323`.
 
-No database tables or migrations are required — this project uses Supabase Auth's built-in `auth.users` table only.
+### Integration token encryption
+
+Per-user integration credentials (Jira PAT, Google Calendar OAuth tokens) are encrypted at the application layer before storage. Set `TOKEN_ENCRYPTION_KEY` in `.env`, `.dev.vars`, and production Wrangler secrets:
+
+```bash
+openssl rand -base64 32
+```
+
+| Variable               | Description                                          |
+| ---------------------- | ---------------------------------------------------- |
+| `TOKEN_ENCRYPTION_KEY` | 32-byte AES key, base64-encoded (server-only secret) |
+
+`SUPABASE_SERVICE_ROLE_KEY` is not required until cross-user calendar reads (roadmap slice S-04).
+
+Verify the token store locally (requires Docker + test user credentials):
+
+```bash
+# optional: TEST_USER_EMAIL, TEST_USER_PASSWORD, TEST_USER_B_EMAIL, TEST_USER_B_PASSWORD
+npx tsx --env-file=.env scripts/verify-integration-tokens.mts
+```
 
 ### Using a cloud Supabase project instead
 
 If you prefer to use a hosted Supabase project, add these variables to your `.env` and `.dev.vars` files:
 
-| Variable       | Description                                                |
-| -------------- | ---------------------------------------------------------- |
-| `SUPABASE_URL` | Project URL from Supabase dashboard → Settings → API       |
-| `SUPABASE_KEY` | `anon` public key from Supabase dashboard → Settings → API |
+| Variable               | Description                                                 |
+| ---------------------- | ----------------------------------------------------------- |
+| `SUPABASE_URL`         | Project URL from Supabase dashboard → Settings → API        |
+| `SUPABASE_KEY`         | `anon` public key from Supabase dashboard → Settings → API  |
+| `TOKEN_ENCRYPTION_KEY` | 32-byte AES key, base64-encoded (`openssl rand -base64 32`) |
 
 ```
 SUPABASE_URL=https://<project-ref>.supabase.co
 SUPABASE_KEY=<anon-key>
+TOKEN_ENCRYPTION_KEY=<base64-key>
 ```
 
 ### Email confirmation in local development
@@ -164,11 +192,11 @@ npm run build
 npx wrangler deploy
 ```
 
-Set `SUPABASE_URL` and `SUPABASE_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
+Set `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
 
 ## CI
 
-GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL` and `SUPABASE_KEY` as repository secrets in GitHub for the build step.
+GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as repository secrets in GitHub for the build step.
 
 ## License
 

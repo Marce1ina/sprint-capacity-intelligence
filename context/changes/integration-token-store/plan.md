@@ -295,15 +295,15 @@ Token operations are infrequent (onboarding, reconnect, token refresh). AES-GCM 
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Build passes: `npm run build`
-- [x] 2.3 TypeScript check passes: `npx astro check` (if available via `@astrojs/check`; otherwise covered by build)
+- [x] 2.1 Linting passes: `npm run lint` — ffdc7aa
+- [x] 2.2 Build passes: `npm run build` — ffdc7aa
+- [x] 2.3 TypeScript check passes: `npx astro check` (if available via `@astrojs/check`; otherwise covered by build) — ffdc7aa
 
 #### Manual
 
-- [x] 2.4 Round-trip test: encrypt → store via service → read → decrypt returns original Jira PAT and calendar payload shapes
-- [x] 2.5 Confirm no plaintext appears in Worker/terminal logs during round-trip
-- [x] 2.6 Confirm service throws clear error when `TOKEN_ENCRYPTION_KEY` is unset
+- [x] 2.4 Round-trip test: encrypt → store via service → read → decrypt returns original Jira PAT and calendar payload shapes — ffdc7aa
+- [x] 2.5 Confirm no plaintext appears in Worker/terminal logs during round-trip — ffdc7aa
+- [x] 2.6 Confirm service throws clear error when `TOKEN_ENCRYPTION_KEY` is unset — ffdc7aa
 
 ### Phase 3: Verification Script & Documentation
 

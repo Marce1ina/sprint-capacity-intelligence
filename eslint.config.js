@@ -68,6 +68,14 @@ const astroConfig = tseslint.config({
   },
 });
 
+const scriptsConfig = tseslint.config({
+  files: ["scripts/**/*"],
+  rules: {
+    "no-console": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+  },
+});
+
 export default tseslint.config(
   { ignores: [".cursor/**"] },
   includeIgnoreFile(gitignorePath),
@@ -76,5 +84,6 @@ export default tseslint.config(
   eslintPluginAstro.configs["flat/recommended"],
   ...eslintPluginAstro.configs["flat/jsx-a11y-recommended"],
   astroConfig,
+  scriptsConfig,
   eslintPluginPrettier,
 );
