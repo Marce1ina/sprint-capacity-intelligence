@@ -1,0 +1,2 @@
+-- No seed data for integration tokens.
+-- Test credentials for local verification are documented in scripts/verify-integration-tokens.mts.
