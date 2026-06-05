@@ -282,14 +282,14 @@ Token operations are infrequent (onboarding, reconnect, token refresh). AES-GCM 
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly: `npx supabase db reset` (requires local Docker Supabase) or `npx supabase migration up`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Build passes: `npm run build`
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` (requires local Docker Supabase) or `npx supabase migration up` — e41b859
+- [x] 1.2 Linting passes: `npm run lint` — e41b859
+- [x] 1.3 Build passes: `npm run build` — e41b859
 
 #### Manual
 
-- [x] 1.4 `integration_tokens` table visible in Supabase Studio after migration
-- [x] 1.5 RLS policy present; inserting a row as user A cannot be read by user B (verify via two test accounts or documented SQL policy check)
+- [x] 1.4 `integration_tokens` table visible in Supabase Studio after migration — e41b859
+- [x] 1.5 RLS policy present; inserting a row as user A cannot be read by user B (verify via two test accounts or documented SQL policy check) — e41b859
 
 ### Phase 2: Encryption & Token Service
 
