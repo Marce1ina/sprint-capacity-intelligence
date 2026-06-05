@@ -309,11 +309,11 @@ Token operations are infrequent (onboarding, reconnect, token refresh). AES-GCM 
 
 #### Automated
 
-- [x] 3.1 Linting passes: `npm run lint`
-- [x] 3.2 Build passes: `npm run build`
+- [x] 3.1 Linting passes: `npm run lint` — 565a622
+- [x] 3.2 Build passes: `npm run build` — 565a622
 
 #### Manual
 
-- [x] 3.3 Verification script runs successfully against local Supabase with test credentials (crypto + service + optional RLS)
-- [x] 3.4 `.env.example` and README accurately list all three secrets: `SUPABASE_URL`, `SUPABASE_KEY`, `TOKEN_ENCRYPTION_KEY`
-- [x] 3.5 Reviewer confirms plan's "What We're NOT Doing" items were not implemented
+- [x] 3.3 Verification script runs successfully against local Supabase with test credentials (crypto + service + optional RLS) — 565a622
+- [x] 3.4 `.env.example` and README accurately list all three secrets: `SUPABASE_URL`, `SUPABASE_KEY`, `TOKEN_ENCRYPTION_KEY` — 565a622
+- [x] 3.5 Reviewer confirms plan's "What We're NOT Doing" items were not implemented — 565a622

@@ -1,7 +1,7 @@
 ---
 change_id: integration-token-store
 title: Integration token store
-status: implementing
+status: implemented
 created: 2026-06-05
 updated: 2026-06-05
 archived_at: null
