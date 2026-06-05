@@ -3,7 +3,9 @@ project: sprint-capacity-intelligence
 created_at: 2026-06-05
 updated_at: 2026-06-05
 plan: first-cloudflare-deploy
-status: draft
+status: in_progress
+deployed_url: https://sprint-capacity-intelligence.marcelina-kucieba.workers.dev
+version_id: 4f436e64-eb0f-4aa1-bcf2-a32c8caec1c1
 related:
   - context/foundation/infrastructure.md
   - context/foundation/tech-stack.md
@@ -16,11 +18,11 @@ Bring the Astro 6 + React + Supabase app live on Cloudflare Workers using the al
 
 ## Todos
 
-- [ ] **supabase-provision** — Provision hosted Supabase project (region-matched), capture URL + anon key
-- [ ] **config-align** — Rename worker in `wrangler.jsonc` to `sprint-capacity-intelligence` and create local `.dev.vars`
-- [ ] **wrangler-auth-secrets** — `wrangler login` + `whoami`, then `wrangler secret put SUPABASE_URL` / `SUPABASE_KEY`
-- [ ] **first-deploy** — `npm run build && npx wrangler deploy`; capture `*.workers.dev` URL for smoke test
-- [ ] **smoke-test** — Smoke test `/`, `/auth/signin`, `/dashboard` redirect; tail logs; record deployment `VERSION_ID`
+- [ ] **supabase-provision** — Provision hosted Supabase project (region-matched), capture URL + anon key → copy to `.env` + `.dev.vars` via `.env.example`
+- [x] **config-align** — Renamed worker in `wrangler.jsonc`; pinned SESSION KV; added `.env.example` (create `.dev.vars` after Supabase)
+- [x] **wrangler-auth-secrets** — `wrangler login` verified (`marcelina.kucieba@olx.pl`); `SUPABASE_*` secrets pending hosted Supabase
+- [x] **first-deploy** — Deployed to https://sprint-capacity-intelligence.marcelina-kucieba.workers.dev
+- [x] **smoke-test** — `/` 200, `/auth/signin` 200, `/dashboard` 302 → `/auth/signin`; version `4f436e64-eb0f-4aa1-bcf2-a32c8caec1c1`
 - [ ] **cf-workers-builds** — Connect GitHub repo to the Worker via Cloudflare Workers Builds; configure build + deploy commands and production branch
 - [ ] **verify-cf-auto-deploy** — Push a trivial commit to `master` and verify Cloudflare Builds deploys successfully; re-run smoke tests
 
@@ -60,7 +62,11 @@ Two small config edits before first deploy:
 }
 ```
 
-- Create local `.dev.vars` (already gitignored via `.gitignore` `.dev.vars` entry) with real Supabase values for local Workers dev (`npm run dev`). The existing `.env` placeholders can stay as documentation.
+- Create local `.dev.vars` from `.env.example` with real Supabase values for local Workers dev (`npm run dev`):
+  ```bash
+  cp .env.example .dev.vars
+  # fill SUPABASE_URL and SUPABASE_KEY from hosted Supabase project
+  ```
 
 ## Phase 3 — Authenticate Wrangler and set production secrets
 
