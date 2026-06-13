@@ -139,16 +139,16 @@ If no warnings were queued, skip the prompt and proceed directly.
    - Use a file editing operation to update each of the three frontmatter lines. Do NOT touch any other field; in particular, leave `created` and `change_id` alone.
 
 3. **Move the folder**:
-   - Prefer running a bash command `git mv "context/changes/<change-id>" "$DEST"` so history follows.
-   - If `git mv` fails (not a git repo, or git refuses for some reason), fall back to running bash commands `mkdir -p context/archive` then `mv "context/changes/<change-id>" "$DEST"`. Print a warning if the fallback was used.
-   - Confirm post-move by running bash commands `[ -d "$DEST" ] && [ ! -d "context/changes/<change-id>" ]`. If either check fails, print a diagnostic and STOP.
+   - Prefer `git mv "context/changes/<change-id>" "$DEST"` so history follows.
+   - If `git mv` fails (not a git repo, or git refuses for some reason), fall back to `mkdir -p context/archive` then `mv "context/changes/<change-id>" "$DEST"`. Print a warning if the fallback was used.
+   - Confirm post-move: `[ -d "$DEST" ] && [ ! -d "context/changes/<change-id>" ]`. If either check fails, print a diagnostic and STOP.
 
-4. **Stage the stamp into the rename.** The file editing operation in step 2 modified `change.md` in the working tree, but `git mv` only stages the rename with the file's HEAD content. Run a bash command `git add "$DEST/change.md"` so the frontmatter stamp lands in the same commit as the rename.
+4. **Stage the stamp into the rename.** The file editing operation in step 2 modified `change.md` in the working tree, but `git mv` only stages the rename with the file's HEAD content. Run `git add "$DEST/change.md"` so the frontmatter stamp lands in the same commit as the rename.
 
 5. **Close the matching roadmap item** — best effort; this step never blocks, never rolls back, and never prompts. A roadmap is optional; most changes won't trace to one.
 
-   1. Run a bash command `test -f context/foundation/roadmap.md`. If absent, skip this step silently.
-   2. Capture whether the file is already dirty by running a bash command `ROADMAP_PREDIRTY=$(git status --porcelain context/foundation/roadmap.md 2>/dev/null)`. (Used in sub-step 7 to decide whether to stage it into the archive commit.)
+   1. Check if `context/foundation/roadmap.md` exists. If absent, skip this step silently.
+   2. Capture whether the file is already dirty: `ROADMAP_PREDIRTY=$(git status --porcelain context/foundation/roadmap.md 2>/dev/null)`. (Used in sub-step 7 to decide whether to stage it into the archive commit.)
    3. Read `context/foundation/roadmap.md`. Look for `<change-id>` used as a `Change ID`:
       - in the `## At a glance` table — the row whose **Change ID** column cell equals `<change-id>` exactly;
       - and in the `## Foundations` / `## Slices` bodies — the `### <ID>: …` block that contains a `- **Change ID:** <change-id>` line.
@@ -166,10 +166,10 @@ If no warnings were queued, skip the prompt and proceed directly.
 
          `<today>` is `date -u +%F` (`YYYY-MM-DD`); `<CREATED>` is the value computed in step 1 of "Compute archive destination". If the roadmap has no `## Done` heading, append the heading and this bullet at the end of the file.
    6. Bump the roadmap frontmatter: set `updated: <today as YYYY-MM-DD>`. Leave every other key (`created`, `version`, `status`, `prd_version`, `main_goal`, `top_blocker`, …) untouched. If the file has no YAML frontmatter, skip this sub-step.
-   7. **Stage it into the archive commit** — only if `git` is available **and** `ROADMAP_PREDIRTY` (sub-step 2) was empty. Then run a bash command `git add context/foundation/roadmap.md` so the roadmap close lands in the same commit as the rename + stamp. If `ROADMAP_PREDIRTY` was non-empty, the file already had uncommitted edits; leave the roadmap close in the working tree and print `⚠ context/foundation/roadmap.md had pre-existing uncommitted changes — closed roadmap item <ID> in the working tree but did NOT stage it. Commit it yourself.` If `git` is unavailable, the edit just stays in the working tree (the pre-flight already warned).
+   7. **Stage it into the archive commit** — only if `git` is available **and** `ROADMAP_PREDIRTY` (sub-step 2) was empty. Then run `git add context/foundation/roadmap.md` so the roadmap close lands in the same commit as the rename + stamp. If `ROADMAP_PREDIRTY` was non-empty, the file already had uncommitted edits; leave the roadmap close in the working tree and print `⚠ context/foundation/roadmap.md had pre-existing uncommitted changes — closed roadmap item <ID> in the working tree but did NOT stage it. Commit it yourself.` If `git` is unavailable, the edit just stays in the working tree (the pre-flight already warned).
    8. Remember `<ID>` and `<Outcome>` for the confirmation output.
 
-6. **Commit the archive.** Author one commit by running a bash command:
+6. **Commit the archive.** Author one commit:
 
    ```bash
    git commit -m "$(cat <<'EOF'
