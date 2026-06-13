@@ -50,7 +50,7 @@ export async function encryptTokenPayload(plaintext: string, key: string): Promi
   return bytesToBase64(combined);
 }
 
-export async function decryptTokenPayload(ciphertext: string, key: string): Promise<string> {
+export async function decryptTokenPayload(ciphertext: string, key: string): Promise<unknown> {
   let combined: Uint8Array;
   try {
     combined = base64ToBytes(ciphertext);
@@ -68,7 +68,8 @@ export async function decryptTokenPayload(ciphertext: string, key: string): Prom
 
   try {
     const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, cryptoKey, encrypted);
-    return new TextDecoder().decode(decrypted);
+    const plaintext = new TextDecoder().decode(decrypted);
+    return JSON.parse(plaintext);
   } catch {
     throw new TokenEncryptionError("Failed to decrypt token payload");
   }

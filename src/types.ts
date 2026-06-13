@@ -14,9 +14,9 @@ export interface GoogleCalendarTokenPayload {
 
 export interface IntegrationTokenRow {
   id: string;
-  userId: string;
+  user_id: string;
   provider: IntegrationProvider;
-  encryptedPayload: string;
-  createdAt: string;
-  updatedAt: string;
+  encrypted_payload: string;
+  created_at: string;
+  updated_at: string;
 }

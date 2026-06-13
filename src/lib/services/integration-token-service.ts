@@ -38,7 +38,42 @@ export class IntegrationTokenService {
     }
   }
 
-  private async getDecryptedPayload<T>(userId: string, provider: IntegrationProvider): Promise<T | null> {
+  private assertJiraPayload(payload: unknown): JiraTokenPayload {
+    if (typeof payload !== "object" || payload === null) {
+      throw new TokenEncryptionError("Stored token payload is invalid");
+    }
+
+    const { pat, siteUrl } = payload as Record<string, unknown>;
+    if (typeof pat !== "string") {
+      throw new TokenEncryptionError("Stored token payload is invalid");
+    }
+    if (siteUrl !== undefined && typeof siteUrl !== "string") {
+      throw new TokenEncryptionError("Stored token payload is invalid");
+    }
+
+    return siteUrl !== undefined ? { pat, siteUrl } : { pat };
+  }
+
+  private assertGoogleCalendarPayload(payload: unknown): GoogleCalendarTokenPayload {
+    if (typeof payload !== "object" || payload === null) {
+      throw new TokenEncryptionError("Stored token payload is invalid");
+    }
+
+    const { accessToken, refreshToken, expiresAt, scopes } = payload as Record<string, unknown>;
+    if (
+      typeof accessToken !== "string" ||
+      typeof refreshToken !== "string" ||
+      typeof expiresAt !== "string" ||
+      !Array.isArray(scopes) ||
+      !scopes.every((scope) => typeof scope === "string")
+    ) {
+      throw new TokenEncryptionError("Stored token payload is invalid");
+    }
+
+    return { accessToken, refreshToken, expiresAt, scopes };
+  }
+
+  private async getDecryptedPayload(userId: string, provider: IntegrationProvider): Promise<unknown | null> {
     const { data, error } = await this.supabase
       .from("integration_tokens")
       .select("encrypted_payload")
@@ -54,8 +89,7 @@ export class IntegrationTokenService {
       return null;
     }
 
-    const plaintext = await decryptTokenPayload(data.encrypted_payload, this.requireEncryptionKey());
-    return JSON.parse(plaintext) as T;
+    return await decryptTokenPayload(data.encrypted_payload, this.requireEncryptionKey());
   }
 
   async upsertJiraPat(userId: string, payload: JiraTokenPayload): Promise<void> {
@@ -67,11 +101,19 @@ export class IntegrationTokenService {
   }
 
   async getJiraPat(userId: string): Promise<JiraTokenPayload | null> {
-    return this.getDecryptedPayload<JiraTokenPayload>(userId, "jira");
+    const payload = await this.getDecryptedPayload(userId, "jira");
+    if (payload === null) {
+      return null;
+    }
+    return this.assertJiraPayload(payload);
   }
 
   async getGoogleCalendarTokens(userId: string): Promise<GoogleCalendarTokenPayload | null> {
-    return this.getDecryptedPayload<GoogleCalendarTokenPayload>(userId, "google_calendar");
+    const payload = await this.getDecryptedPayload(userId, "google_calendar");
+    if (payload === null) {
+      return null;
+    }
+    return this.assertGoogleCalendarPayload(payload);
   }
 
   async deleteToken(userId: string, provider: IntegrationProvider): Promise<void> {

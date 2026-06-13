@@ -78,12 +78,12 @@ async function runCryptoRoundTrip(encryptionKey: string): Promise<void> {
   const jiraPlain = JSON.stringify(jiraSample);
   const jiraEncrypted = await encryptTokenPayload(jiraPlain, encryptionKey);
   const jiraDecrypted = await decryptTokenPayload(jiraEncrypted, encryptionKey);
-  record("crypto jira round-trip", jiraDecrypted === jiraPlain);
+  record("crypto jira round-trip", JSON.stringify(jiraDecrypted) === jiraPlain);
 
   const calendarPlain = JSON.stringify(calendarSample);
   const calendarEncrypted = await encryptTokenPayload(calendarPlain, encryptionKey);
   const calendarDecrypted = await decryptTokenPayload(calendarEncrypted, encryptionKey);
-  record("crypto calendar round-trip", calendarDecrypted === calendarPlain);
+  record("crypto calendar round-trip", JSON.stringify(calendarDecrypted) === calendarPlain);
 }
 
 async function runMissingKeyCheck(supabase: SupabaseClient): Promise<void> {
