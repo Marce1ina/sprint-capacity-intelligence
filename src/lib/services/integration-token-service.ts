@@ -73,7 +73,7 @@ export class IntegrationTokenService {
     return { accessToken, refreshToken, expiresAt, scopes };
   }
 
-  private async getDecryptedPayload(userId: string, provider: IntegrationProvider): Promise<unknown | null> {
+  private async getDecryptedPayload(userId: string, provider: IntegrationProvider): Promise<unknown> {
     const { data, error } = await this.supabase
       .from("integration_tokens")
       .select("encrypted_payload")
