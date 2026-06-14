@@ -10,6 +10,7 @@ import { JiraValidationError } from "@/types";
 export { normalizeSiteUrl } from "@/lib/jira-site-url";
 
 const PAGE_SIZE = 50;
+const MAX_PAGES = 50;
 const TIMEOUT_MS = 10_000;
 /** Default Jira Software story-points field; `storyPoints` alias is tried first when present. */
 const STORY_POINTS_CUSTOM_FIELD = "customfield_10016";
@@ -71,6 +72,12 @@ function isPaginatedLastPage(
   }
   const pageSize = page.maxResults || PAGE_SIZE;
   return itemCount === 0 || itemCount < pageSize;
+}
+
+function assertWithinPaginationLimit(pageCount: number): void {
+  if (pageCount > MAX_PAGES) {
+    throw new JiraValidationError("Jira returned too much data to load. Please try again.");
+  }
 }
 
 async function fetchJiraJson<T>(
@@ -139,8 +146,12 @@ async function paginateValues<T>(
   const all: T[] = [];
   let startAt = 0;
   let isLast = false;
+  let pageCount = 0;
 
   while (!isLast) {
+    pageCount += 1;
+    assertWithinPaginationLimit(pageCount);
+
     const page = await fetchJiraJson<PaginatedValues<T>>(siteUrl, pat, accountEmail, path, {
       ...searchParams,
       startAt: String(startAt),
@@ -163,8 +174,12 @@ async function paginateSprintIssues(
   const all: SprintIssueRow[] = [];
   let startAt = 0;
   let isLast = false;
+  let pageCount = 0;
 
   while (!isLast) {
+    pageCount += 1;
+    assertWithinPaginationLimit(pageCount);
+
     const page = await fetchJiraJson<SprintIssuesPage>(
       siteUrl,
       pat,

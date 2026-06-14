@@ -1,16 +1,9 @@
 import type { APIRoute } from "astro";
 import { jsonError, mapJiraClientError, resolveJiraApiContext } from "@/lib/jira-api-context";
+import { parsePositiveInt } from "@/lib/parse-route-id";
 import { listActiveFutureSprints } from "@/lib/services/jira-client";
 
 export const prerender = false;
-
-function parsePositiveInt(value: string | undefined): number | null {
-  const parsed = Number(value);
-  if (!Number.isInteger(parsed) || parsed <= 0) {
-    return null;
-  }
-  return parsed;
-}
 
 export const GET: APIRoute = async (context) => {
   const boardId = parsePositiveInt(context.params.boardId);

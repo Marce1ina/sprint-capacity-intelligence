@@ -24,6 +24,9 @@ export default function SprintPicker() {
     retry,
   } = useJiraSprintPicker();
 
+  const showNoBoards = !loading && !error && boards.length === 0;
+  const showNoSprints = selectedBoardId !== null && !loading && !error && sprints.length === 0;
+
   return (
     <div className="relative min-h-[280px]">
       {loading && (
@@ -59,6 +62,7 @@ export default function SprintPicker() {
                 ))}
               </SelectContent>
             </Select>
+            {showNoBoards && <p className="text-sm text-blue-100/60">No Jira boards found for your account.</p>}
           </div>
 
           <div className="space-y-2">
@@ -73,7 +77,15 @@ export default function SprintPicker() {
               disabled={selectedBoardId === null || sprints.length === 0}
             >
               <SelectTrigger id="sprint-select" className={selectTriggerClassName}>
-                <SelectValue placeholder={selectedBoardId === null ? "Select a board first" : "Select a sprint"} />
+                <SelectValue
+                  placeholder={
+                    selectedBoardId === null
+                      ? "Select a board first"
+                      : showNoSprints
+                        ? "No active or future sprints"
+                        : "Select a sprint"
+                  }
+                />
               </SelectTrigger>
               <SelectContent className={selectContentClassName} position="popper">
                 {sprints.map((sprint) => (
@@ -84,6 +96,7 @@ export default function SprintPicker() {
                 ))}
               </SelectContent>
             </Select>
+            {showNoSprints && <p className="text-sm text-blue-100/60">No active or future sprints on this board.</p>}
           </div>
         </div>
 

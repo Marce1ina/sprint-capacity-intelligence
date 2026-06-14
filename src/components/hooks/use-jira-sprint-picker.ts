@@ -39,6 +39,8 @@ export function useJiraSprintPicker() {
   const [error, setError] = useState<string | null>(null);
 
   const loadingCountRef = useRef(0);
+  const sprintsRequestRef = useRef(0);
+  const assigneesRequestRef = useRef(0);
 
   const beginLoading = useCallback(() => {
     loadingCountRef.current += 1;
@@ -70,13 +72,20 @@ export function useJiraSprintPicker() {
 
   const loadSprints = useCallback(
     async (boardId: number) => {
+      const requestId = ++sprintsRequestRef.current;
       beginLoading();
       setError(null);
 
       try {
         const data = await fetchJson<SprintsResponse>(`/api/jira/boards/${boardId}/sprints`);
+        if (requestId !== sprintsRequestRef.current) {
+          return;
+        }
         setSprints(data.sprints);
       } catch (err) {
+        if (requestId !== sprintsRequestRef.current) {
+          return;
+        }
         setSprints([]);
         setError(err instanceof Error ? err.message : "Could not load sprints from Jira.");
       } finally {
@@ -88,13 +97,20 @@ export function useJiraSprintPicker() {
 
   const loadAssignees = useCallback(
     async (sprintId: number) => {
+      const requestId = ++assigneesRequestRef.current;
       beginLoading();
       setError(null);
 
       try {
         const data = await fetchJson<AssigneesResponse>(`/api/jira/sprints/${sprintId}/assignees`);
+        if (requestId !== assigneesRequestRef.current) {
+          return;
+        }
         setAssignees(data.assignees);
       } catch (err) {
+        if (requestId !== assigneesRequestRef.current) {
+          return;
+        }
         setAssignees([]);
         setError(err instanceof Error ? err.message : "Could not load sprint assignees from Jira.");
       } finally {
@@ -116,6 +132,8 @@ export function useJiraSprintPicker() {
 
   const setSelectedBoardId = useCallback(
     (boardId: number | null) => {
+      sprintsRequestRef.current += 1;
+      assigneesRequestRef.current += 1;
       setSelectedBoardIdState(boardId);
       setSelectedSprintIdState(null);
       setSprints([]);
@@ -131,6 +149,7 @@ export function useJiraSprintPicker() {
 
   const setSelectedSprintId = useCallback(
     (sprintId: number | null) => {
+      assigneesRequestRef.current += 1;
       setSelectedSprintIdState(sprintId);
       setAssignees([]);
       setError(null);

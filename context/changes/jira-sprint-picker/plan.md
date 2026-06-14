@@ -296,6 +296,12 @@ No database migration required. Ephemeral sprint selection means no schema chang
 - Jira Agile REST: `GET /rest/agile/1.0/board`, `/board/{id}/sprint`, `/sprint/{id}/issue`
 - Lessons: `context/foundation/lessons.md` (production readiness checklist)
 
+## Addendum: Story-point field resolution (impl-review F3, 2026-06-14)
+
+Phase 1 spike on the target Jira Cloud instance confirmed non-zero story-point totals. Implementation drift: `readStoryPoints()` in `jira-client.ts` tries the `storyPoints` alias first, then falls back to hardcoded `customfield_10016` (default Jira Software estimation field on the spike instance). Request fields include `assignee,summary,storyPoints,customfield_10016`.
+
+**Accepted for S-02:** single-instance MVP with spike-validated site. **Deferred to S-03/S-04:** dynamic estimation-field discovery via board configuration or onboarding metadata — required before supporting arbitrary Jira Cloud sites without silent zero-point totals.
+
 ## Progress
 
 > Convention: `- [ ]` pending, `- [x]` done. Append ` — <commit sha>` when a step lands. Do not rename step titles.
