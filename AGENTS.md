@@ -32,12 +32,14 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 - Auth page: `src/pages/auth/signin.astro` (Google sign-in CTA only).
 - Onboarding: `src/pages/onboarding.astro` + `POST /api/onboarding/jira`; Jira validation in `src/lib/services/jira-client.ts`; persistence via `IntegrationTokenService.upsertJiraPat()`.
 - Sign-out: `POST /api/auth/signout`
-- Protected pages: `src/pages/dashboard.astro`, `src/pages/onboarding.astro`
+- Account settings: `src/pages/settings.astro` — email display, sign-out, two-step account deletion (auth-only; no Jira token required).
+- Account deletion: `POST /api/account/delete` — revokes Google Calendar token (when stored), purges `integration_tokens`, deletes auth user via Admin API, signs out, redirects `/`. Uses `createAdminClient()` from `src/lib/supabase-admin.ts` (service role only in this flow — never attach to `context.locals` or client UI).
+- Protected pages: `src/pages/dashboard.astro`, `src/pages/onboarding.astro`, `src/pages/settings.astro`
 
 ## Environment
 
 - Node.js v22.14.0 (see `.nvmrc`)
-- Env vars: `SUPABASE_URL`, `SUPABASE_KEY`, `TOKEN_ENCRYPTION_KEY` (copy `.env.example` to `.env` for Node, or `.dev.vars` for Cloudflare local dev)
+- Env vars: `SUPABASE_URL`, `SUPABASE_KEY`, `TOKEN_ENCRYPTION_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (copy `.env.example` to `.env` for Node, or `.dev.vars` for Cloudflare local dev)
 - Integration tokens: `src/lib/services/integration-token-service.ts` with schema in `supabase/migrations/*_integration_tokens.sql`. Never log tokens or return decrypted payloads to client UI.
 - Local Supabase: `npx supabase start` (requires Docker)
 - Cloudflare local dev: secrets go in `.dev.vars` (gitignored)

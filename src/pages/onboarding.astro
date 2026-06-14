@@ -1,4 +1,5 @@
 ---
+import AppNav from "@/components/AppNav.astro";
 import Layout from "@/layouts/Layout.astro";
 import JiraPatForm from "@/components/onboarding/JiraPatForm";
 
@@ -6,27 +7,30 @@ const error = Astro.url.searchParams.get("error");
 ---
 
 <Layout title="Onboarding">
-  <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
-    <div class="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
-      <h1 class="mb-4 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
-        Connect Jira
-      </h1>
-      <p class="mb-6 text-sm text-blue-100/80">
-        Add your Atlassian API token and site URL so we can read sprint data. Your token is encrypted and never shown
-        again after saving.
-      </p>
-      <p class="mb-6 text-sm text-blue-100/60">
-        <a
-          href="https://id.atlassian.com/manage-profile/security/api-tokens"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-purple-300 underline transition-colors hover:text-purple-200"
-        >
-          Create an API token in Atlassian
-        </a>
-        — use the same email you signed in with.
-      </p>
-      <JiraPatForm serverError={error} client:load />
+  <div class="bg-cosmic min-h-screen p-4">
+    <div class="mx-auto max-w-md">
+      <AppNav />
+      <div class="rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
+        <h1 class="mb-4 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
+          Connect Jira
+        </h1>
+        <p class="mb-6 text-sm text-blue-100/80">
+          Add your Atlassian API token and site URL so we can read sprint data. Your token is encrypted and never shown
+          again after saving.
+        </p>
+        <p class="mb-6 text-sm text-blue-100/60">
+          <a
+            href="https://id.atlassian.com/manage-profile/security/api-tokens"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-purple-300 underline transition-colors hover:text-purple-200"
+          >
+            Create an API token in Atlassian
+          </a>
+          — use the same email you signed in with.
+        </p>
+        <JiraPatForm serverError={error} client:load />
+      </div>
     </div>
   </div>
 </Layout>

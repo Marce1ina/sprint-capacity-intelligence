@@ -128,6 +128,14 @@ export class IntegrationTokenService {
     }
   }
 
+  async deleteAllTokens(userId: string): Promise<void> {
+    const { error } = await this.supabase.from("integration_tokens").delete().eq("user_id", userId);
+
+    if (error) {
+      throw error;
+    }
+  }
+
   async hasToken(userId: string, provider: IntegrationProvider): Promise<boolean> {
     const { data, error } = await this.supabase
       .from("integration_tokens")

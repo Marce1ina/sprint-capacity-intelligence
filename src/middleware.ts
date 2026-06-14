@@ -3,7 +3,7 @@ import { TOKEN_ENCRYPTION_KEY } from "astro:env/server";
 import { createClient } from "@/lib/supabase";
 import { IntegrationTokenService } from "@/lib/services/integration-token-service";
 
-const PROTECTED_ROUTES = ["/dashboard", "/onboarding"];
+const PROTECTED_ROUTES = ["/dashboard", "/onboarding", "/settings"];
 
 function isProtectedPage(pathname: string): boolean {
   return PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
@@ -29,7 +29,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
-  if (isProtectedPage(pathname) && supabase) {
+  if (isProtectedPage(pathname) && supabase && !pathname.startsWith("/settings")) {
     try {
       const service = new IntegrationTokenService(supabase, TOKEN_ENCRYPTION_KEY ?? "");
       const hasJiraToken = await service.hasToken(context.locals.user.id, "jira");

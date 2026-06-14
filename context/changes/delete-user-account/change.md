@@ -1,7 +1,7 @@
 ---
 change_id: delete-user-account
 title: EM account deletion and data purge
-status: plan_reviewed
+status: implementing
 created: 2026-06-14
 updated: 2026-06-14
 ---
