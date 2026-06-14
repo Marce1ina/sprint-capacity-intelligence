@@ -351,11 +351,11 @@ No database migration required. Ephemeral sprint selection means no schema chang
 
 #### Automated
 
-- [x] 4.1 Linting passes: `npm run lint`
-- [x] 4.2 Production build passes: `npm run build`
-- [x] 4.3 CI workflow unchanged and green on PR
+- [x] 4.1 Linting passes: `npm run lint` — 11622db
+- [x] 4.2 Production build passes: `npm run build` — 11622db
+- [x] 4.3 CI workflow unchanged and green on PR — 11622db
 
 #### Manual
 
-- [ ] 4.4 Production smoke checklist completed on live Worker URL
-- [ ] 4.5 README accurately describes sprint picker flow
+- [x] 4.4 Production smoke checklist completed on live Worker URL
+- [x] 4.5 README accurately describes sprint picker flow
