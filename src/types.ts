@@ -30,3 +30,26 @@ export class JiraValidationError extends Error {
     this.userMessage = userMessage;
   }
 }
+
+/** Alias for read-path Jira API errors — same safe `userMessage` contract as validation. */
+export { JiraValidationError as JiraApiError };
+
+export interface JiraBoard {
+  id: number;
+  name: string;
+  type?: string;
+}
+
+export interface JiraSprint {
+  id: number;
+  name: string;
+  state: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface SprintAssignee {
+  accountId: string | null;
+  displayName: string;
+  totalStoryPoints: number;
+}

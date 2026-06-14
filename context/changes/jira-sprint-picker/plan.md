@@ -304,14 +304,14 @@ No database migration required. Ephemeral sprint selection means no schema chang
 
 #### Automated
 
-- [ ] 1.1 Linting passes: `npm run lint`
-- [ ] 1.2 Production build passes: `npm run build`
-- [ ] 1.3 No new env vars required beyond existing secrets
+- [x] 1.1 Linting passes: `npm run lint`
+- [x] 1.2 Production build passes: `npm run build`
+- [x] 1.3 No new env vars required beyond existing secrets
 
 #### Manual
 
-- [ ] 1.4 Mandatory real-Jira spike confirms `storyPoints` alias returns non-zero totals
-- [ ] 1.5 Error paths return safe messages, not raw Jira response bodies
+- [x] 1.4 Mandatory real-Jira spike confirms `storyPoints` alias returns non-zero totals
+- [x] 1.5 Error paths return safe messages, not raw Jira response bodies
 
 ### Phase 2: JSON API Routes
 
