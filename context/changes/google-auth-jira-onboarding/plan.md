@@ -359,29 +359,29 @@ Remove email/password auth surfaces, update landing/marketing copy, and document
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Build passes: `npm run build`
+- [x] 1.1 Linting passes: `npm run lint` — d201228
+- [x] 1.2 Build passes: `npm run build` — d201228
 
 #### Manual
 
-- [x] 1.3 Supabase local config: `supabase stop && supabase start` succeeds after `config.toml` changes
-- [x] 1.4 Google sign-in (local or hosted): click "Continue with Google" → Google consent → lands on `/onboarding` with session
-- [x] 1.5 OAuth failure surfaces readable error on `/auth/signin`
+- [x] 1.3 Supabase local config: `supabase stop && supabase start` succeeds after `config.toml` changes — d201228
+- [x] 1.4 Google sign-in (local or hosted): click "Continue with Google" → Google consent → lands on `/onboarding` with session — d201228
+- [x] 1.5 OAuth failure surfaces readable error on `/auth/signin` — d201228
 
 ### Phase 2: Jira Onboarding, Validation & Routing
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 New Google user lands on `/onboarding`; cannot reach `/dashboard` until PAT saved
-- [ ] 2.4 Valid PAT + site URL → saves → redirects to `/dashboard`; `hasToken('jira')` returns true
-- [ ] 2.5 Invalid PAT → error on onboarding page; no row written to `integration_tokens`
-- [ ] 2.6 Returning user with Jira token visiting `/onboarding` redirects to `/dashboard`
-- [ ] 2.7 PAT and site URL never appear in browser network response bodies or server logs
+- [x] 2.3 New Google user lands on `/onboarding`; cannot reach `/dashboard` until PAT saved
+- [x] 2.4 Valid PAT + site URL → saves → redirects to `/dashboard`; `hasToken('jira')` returns true
+- [x] 2.5 Invalid PAT → error on onboarding page; no row written to `integration_tokens`
+- [x] 2.6 Returning user with Jira token visiting `/onboarding` redirects to `/dashboard`
+- [x] 2.7 PAT and site URL never appear in browser network response bodies or server logs
 
 ### Phase 3: Legacy Auth Removal & Documentation
 

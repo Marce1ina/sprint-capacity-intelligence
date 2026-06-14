@@ -50,6 +50,7 @@ export function FormField({
           placeholder={placeholder}
           className={cn(
             inputBase,
+            endContent && "pr-10",
             error ? "border-red-400/60 focus:ring-red-400" : "border-white/20 focus:ring-purple-400",
           )}
         />

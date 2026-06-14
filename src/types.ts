@@ -20,3 +20,13 @@ export interface IntegrationTokenRow {
   created_at: string;
   updated_at: string;
 }
+
+export class JiraValidationError extends Error {
+  readonly userMessage: string;
+
+  constructor(userMessage: string) {
+    super(userMessage);
+    this.name = "JiraValidationError";
+    this.userMessage = userMessage;
+  }
+}
