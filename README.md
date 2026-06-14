@@ -204,9 +204,41 @@ TOKEN_ENCRYPTION_KEY=<base64-key>
 | `/api/auth/signout`    | Ends session and redirects to `/`                                            |
 | `/onboarding`          | Jira PAT + site URL setup (requires auth; redirects to `/dashboard` if done) |
 | `/api/onboarding/jira` | Validates and saves Jira credentials (POST form)                             |
-| `/dashboard`           | Protected page (requires auth + Jira token; redirects otherwise)             |
+| `/dashboard`           | Sprint picker — board/sprint selection and assignee story-point totals       |
 
 Route protection and onboarding guards are handled in `src/middleware.ts`.
+
+### Jira API routes
+
+Authenticated JSON endpoints used by the dashboard sprint picker. All require a signed-in user with a stored Jira PAT; responses never include the PAT or decrypted token payload.
+
+| Route                                      | Description                                              |
+| ------------------------------------------ | -------------------------------------------------------- |
+| `GET /api/jira/boards`                     | Lists accessible Jira boards for the board dropdown      |
+| `GET /api/jira/boards/:boardId/sprints`    | Lists active and future sprints for the selected board   |
+| `GET /api/jira/sprints/:sprintId/assignees`| Aggregates assignees and total story points for a sprint |
+
+### Jira PAT permissions
+
+The onboarding PAT must be able to **browse** boards, sprints, and issues on the target Jira Cloud site. At minimum:
+
+- Read access to the Jira site (valid email + PAT pair)
+- Permission to view Agile boards and sprints the EM can access
+- Permission to read issue fields including assignee and story points
+
+Create the token in Jira → **Account settings → Security → API tokens**, then paste it with your Jira site URL during onboarding.
+
+### User journey (dashboard sprint picker)
+
+1. Sign in with Google at `/auth/signin`.
+2. Complete onboarding at `/onboarding` with Jira site URL and PAT (skipped if already configured).
+3. Open `/dashboard` — boards load automatically in the board dropdown.
+4. Select a board — active and future sprints appear in the sprint dropdown.
+5. Select a sprint — the assignee table shows each person (plus "Unassigned" when applicable) with summed story points.
+6. On Jira errors, a banner appears with a retry action; a full-page spinner covers the card during fetches.
+7. Board and sprint selection is ephemeral (cleared on page refresh).
+
+Story points are read via the Jira Agile `storyPoints` field alias on sprint issues. This works on default Jira Software scrum boards but is instance-dependent.
 
 ## Deployment
 
@@ -225,6 +257,16 @@ npx wrangler deploy
 ```
 
 Set `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
+
+### Production smoke checklist
+
+Before marking a Jira-integrated deploy as ready, verify hosted configuration end-to-end on the live Worker URL (not just locally):
+
+1. **Hosted Supabase** — `integration_tokens` table exists (apply migrations via `npx supabase db push` or SQL Editor) and the EM user has a Jira token row after onboarding.
+2. **Google OAuth** — provider enabled in Supabase Dashboard; Site URL and redirect URLs point at the Workers origin.
+3. **Cloudflare secrets** — `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` set on the Worker (`npx wrangler secret list`).
+4. **Dashboard flow** — sign in on prod, open `/dashboard`, select board → sprint → assignee table loads with story point totals from the real Jira site.
+5. **No token leakage** — browser Network tab shows no PAT or decrypted credentials in any `/api/jira/*` response.
 
 ## CI
 

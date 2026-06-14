@@ -34,6 +34,23 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 - Sign-out: `POST /api/auth/signout`
 - Protected pages: `src/pages/dashboard.astro`, `src/pages/onboarding.astro`
 
+### Dashboard sprint picker
+
+- `src/pages/dashboard.astro` — Astro shell with sign-out; renders `SprintPicker` React island (`client:load`).
+- `src/components/dashboard/SprintPicker.tsx` — board/sprint selects, assignee table, full-page spinner, `ServerError` retry banner.
+- `src/components/hooks/use-jira-sprint-picker.ts` — fetches boards → sprints → assignees; selection is ephemeral (React state only).
+- `src/lib/services/jira-client.ts` — `listBoards`, `listActiveFutureSprints`, `getSprintAssignees` (Agile REST + story-point aggregation).
+- `src/lib/jira-api-context.ts` — shared auth + `getJiraPat()` resolution for Jira JSON routes.
+- Jira PAT must have browse permission for boards, sprints, and issues on the target site.
+
+### Jira API routes
+
+All return JSON; require `context.locals.user` and stored Jira PAT via `IntegrationTokenService.getJiraPat()`. Never return PAT or decrypted token payload.
+
+- `GET /api/jira/boards` — `src/pages/api/jira/boards.ts`; returns `{ boards: JiraBoard[] }`.
+- `GET /api/jira/boards/[boardId]/sprints` — `src/pages/api/jira/boards/[boardId]/sprints.ts`; returns `{ sprints: JiraSprint[] }` (active/future only).
+- `GET /api/jira/sprints/[sprintId]/assignees` — `src/pages/api/jira/sprints/[sprintId]/assignees.ts`; returns `{ assignees: SprintAssignee[], sprintId: number }`.
+
 ## Environment
 
 - Node.js v22.14.0 (see `.nvmrc`)

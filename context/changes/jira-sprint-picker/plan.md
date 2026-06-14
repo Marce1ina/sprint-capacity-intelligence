@@ -334,26 +334,26 @@ No database migration required. Ephemeral sprint selection means no schema chang
 
 #### Automated
 
-- [x] 3.1 Linting passes: `npm run lint`
-- [x] 3.2 Production build passes: `npm run build`
+- [x] 3.1 Linting passes: `npm run lint` — b04f801
+- [x] 3.2 Production build passes: `npm run build` — b04f801
 
 #### Manual
 
-- [x] 3.3 Dashboard loads board dropdown after auth
-- [x] 3.4 Selecting board loads active/future sprints
-- [x] 3.5 Selecting sprint shows assignee table with story point totals
-- [x] 3.6 Full-page spinner visible during fetches
-- [x] 3.7 Jira failure shows error banner with retry
-- [x] 3.8 Page refresh clears selection (ephemeral state)
-- [x] 3.9 Sign-out still works
+- [x] 3.3 Dashboard loads board dropdown after auth — b04f801
+- [x] 3.4 Selecting board loads active/future sprints — b04f801
+- [x] 3.5 Selecting sprint shows assignee table with story point totals — b04f801
+- [x] 3.6 Full-page spinner visible during fetches — b04f801
+- [x] 3.7 Jira failure shows error banner with retry — b04f801
+- [x] 3.8 Page refresh clears selection (ephemeral state) — b04f801
+- [x] 3.9 Sign-out still works — b04f801
 
 ### Phase 4: Production Readiness
 
 #### Automated
 
-- [ ] 4.1 Linting passes: `npm run lint`
-- [ ] 4.2 Production build passes: `npm run build`
-- [ ] 4.3 CI workflow unchanged and green on PR
+- [x] 4.1 Linting passes: `npm run lint`
+- [x] 4.2 Production build passes: `npm run build`
+- [x] 4.3 CI workflow unchanged and green on PR
 
 #### Manual
 
