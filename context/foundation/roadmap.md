@@ -34,7 +34,7 @@ Engineering Managers commit to sprint scope without knowing whether the team has
 | S-02 | jira-sprint-picker          | select a sprint from Jira and see its assignees                                                                                              | S-01          | FR-003                         | done     |
 | S-03 | assignee-calendar-invite    | invite sprint assignees to connect Google Calendar; assignee connects via invite link                                                        | S-02          | FR-004, FR-005                 | proposed |
 | S-04 | sprint-risk-table           | view a per-person risk table for the selected sprint (story points, meeting hours, context switches, risk level) for each connected assignee | S-02, S-03    | US-01, FR-006, FR-007          | proposed |
-| S-05 | delete-user-account         | permanently delete their account and all associated stored data (integration tokens, profile)                                                | S-01          | Access Control, NFR guardrails | done |
+| S-05 | delete-user-account         | permanently delete their account and all associated stored data (integration tokens, profile)                                                | S-01          | Access Control, NFR guardrails | done     |
 
 ## Baseline
 
