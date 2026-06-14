@@ -3,7 +3,7 @@ project: "Sprint Capacity Intelligence"
 version: 1
 status: active
 created: 2026-06-05
-updated: 2026-06-05
+updated: 2026-06-14
 prd_version: 1
 main_goal: market-feedback
 top_blocker: time
@@ -29,7 +29,7 @@ Engineering Managers commit to sprint scope without knowing whether the team has
 
 | ID   | Change ID                   | Outcome (user can …)                                                                                                                         | Prerequisites | PRD refs                       | Status   |
 | ---- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------ | -------- |
-| F-01 | integration-token-store     | (foundation) persist Jira PAT and calendar OAuth tokens securely                                                                             | —             | Access Control, NFR guardrails | ready    |
+| F-01 | integration-token-store     | (foundation) persist Jira PAT and calendar OAuth tokens securely                                                                             | —             | Access Control, NFR guardrails | done     |
 | S-01 | google-auth-jira-onboarding | sign in with Google and configure Jira PAT during onboarding                                                                                 | F-01          | FR-001, FR-002                 | proposed |
 | S-02 | jira-sprint-picker          | select a sprint from Jira and see its assignees                                                                                              | S-01          | FR-003                         | proposed |
 | S-03 | assignee-calendar-invite    | invite sprint assignees to connect Google Calendar; assignee connects via invite link                                                        | S-02          | FR-004, FR-005                 | proposed |
@@ -60,7 +60,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Data layer is absent today; without token persistence, onboarding and calendar connect cannot be planned safely — sequenced first to unblock the must-have path under time pressure without building a full data platform.
-- **Status:** ready
+- **Status:** done
 
 ## Slices
 
@@ -143,3 +143,5 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **No team weekly risk visualization** — PRD §Non-Goals.
 
 ## Done
+
+- **F-01: (foundation) minimal schema and secure persistence for Jira PAT and calendar OAuth tokens landed; tokens not exposed in UI or logs.** — Archived 2026-06-14 → `context/archive/2026-06-05-integration-token-store/`. Lesson: —.

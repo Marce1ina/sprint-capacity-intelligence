@@ -1,10 +1,10 @@
 ---
 change_id: integration-token-store
 title: Integration token store
-status: impl_reviewed
+status: archived
 created: 2026-06-05
-updated: 2026-06-13
-archived_at: null
+updated: 2026-06-14
+archived_at: 2026-06-14T11:20:15Z
 ---
 
 ## Notes
