@@ -357,5 +357,5 @@ No database migration required. Ephemeral sprint selection means no schema chang
 
 #### Manual
 
-- [x] 4.4 Production smoke checklist completed on live Worker URL
-- [x] 4.5 README accurately describes sprint picker flow
+- [x] 4.4 Production smoke checklist completed on live Worker URL — 94f9a40
+- [x] 4.5 README accurately describes sprint picker flow — 94f9a40
