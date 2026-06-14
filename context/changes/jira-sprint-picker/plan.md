@@ -304,31 +304,31 @@ No database migration required. Ephemeral sprint selection means no schema chang
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Production build passes: `npm run build`
-- [x] 1.3 No new env vars required beyond existing secrets
+- [x] 1.1 Linting passes: `npm run lint` — d5bcd9b
+- [x] 1.2 Production build passes: `npm run build` — d5bcd9b
+- [x] 1.3 No new env vars required beyond existing secrets — d5bcd9b
 
 #### Manual
 
-- [x] 1.4 Mandatory real-Jira spike confirms `storyPoints` alias returns non-zero totals
-- [x] 1.5 Error paths return safe messages, not raw Jira response bodies
+- [x] 1.4 Mandatory real-Jira spike confirms `storyPoints` alias returns non-zero totals — d5bcd9b
+- [x] 1.5 Error paths return safe messages, not raw Jira response bodies — d5bcd9b
 
 ### Phase 2: JSON API Routes
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Production build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Production build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Unauthenticated request returns 401 JSON
-- [ ] 2.4 Authenticated request without Jira token returns 403 JSON
-- [ ] 2.5 Authenticated request with missing siteUrl returns 400 JSON
-- [ ] 2.6 Authenticated request with valid PAT returns boards JSON
-- [ ] 2.7 Valid board ID returns active/future sprints only
-- [ ] 2.8 Valid sprint ID returns assignee aggregation with story point totals
-- [ ] 2.9 Expired/invalid PAT returns safe error JSON
+- [x] 2.3 Unauthenticated request returns 401 JSON
+- [x] 2.4 Authenticated request without Jira token returns 403 JSON
+- [x] 2.5 Authenticated request with missing siteUrl returns 400 JSON
+- [x] 2.6 Authenticated request with valid PAT returns boards JSON
+- [x] 2.7 Valid board ID returns active/future sprints only
+- [x] 2.8 Valid sprint ID returns assignee aggregation with story point totals
+- [x] 2.9 Expired/invalid PAT returns safe error JSON
 
 ### Phase 3: Dashboard Sprint Picker UI
 
