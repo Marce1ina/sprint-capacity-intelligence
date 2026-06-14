@@ -34,6 +34,7 @@ Engineering Managers commit to sprint scope without knowing whether the team has
 | S-02 | jira-sprint-picker          | select a sprint from Jira and see its assignees                                                                                              | S-01          | FR-003                         | proposed |
 | S-03 | assignee-calendar-invite    | invite sprint assignees to connect Google Calendar; assignee connects via invite link                                                        | S-02          | FR-004, FR-005                 | proposed |
 | S-04 | sprint-risk-table           | view a per-person risk table for the selected sprint (story points, meeting hours, context switches, risk level) for each connected assignee | S-02, S-03    | US-01, FR-006, FR-007          | proposed |
+| S-05 | delete-user-account         | permanently delete their account and all associated stored data (integration tokens, profile)                                                | S-01          | Access Control, NFR guardrails | proposed |
 
 ## Baseline
 
@@ -118,6 +119,18 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** North star slice — proves the core hypothesis end-to-end; sequenced immediately after calendar connect because US-01 requires at least one connected assignee and real Jira sprint data.
 - **Status:** proposed
 
+### S-05: EM account deletion
+
+- **Outcome:** EM can permanently delete their account and all associated stored data (integration tokens, profile).
+- **Change ID:** delete-user-account
+- **PRD refs:** Access Control, NFR guardrails (data minimization)
+- **Prerequisites:** S-01
+- **Parallel with:** S-02, S-03, S-04
+- **Blockers:** —
+- **Unknowns:** —
+- **Risk:** Stored PATs and calendar tokens create a data-retention obligation — off the north-star path but needed for trustworthy handling of user data.
+- **Status:** proposed
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                   | Suggested issue title                                        | Ready for `/10x-plan` | Notes                                   | GitHub Issue                                                             |
@@ -127,6 +140,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-02       | jira-sprint-picker          | Select sprint from Jira and list assignees                   | no                    | After S-01                              | [#3](https://github.com/Marce1ina/sprint-capacity-intelligence/issues/3) |
 | S-03       | assignee-calendar-invite    | Invite assignees and connect Google Calendar via link        | no                    | After S-02                              | [#4](https://github.com/Marce1ina/sprint-capacity-intelligence/issues/4) |
 | S-04       | sprint-risk-table           | Per-person sprint risk table (north star)                    | no                    | After S-02 + S-03                       | [#5](https://github.com/Marce1ina/sprint-capacity-intelligence/issues/5) |
+| S-05       | delete-user-account         | EM account deletion and data purge                           | no                    | After S-01; parallel with S-02–S-04     | —                                                                        |
 
 ## Open Roadmap Questions
 
