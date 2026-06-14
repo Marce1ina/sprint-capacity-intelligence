@@ -58,6 +58,8 @@ Three incremental phases:
 
 ## Critical Implementation Details
 
+**CSRF (accepted MVP risk):** Client-side two-step confirmation only — `POST /api/account/delete` has no server-issued nonce. SameSite=Lax session cookies mitigate cross-origin POST in practice; explicit CSRF guard deferred (impl-review F1, 2026-06-14).
+
 **Settings route vs Jira gate:** Add `/settings` to protected routes for auth, but exclude it from the `hasToken('jira')` redirect block in `src/middleware.ts`. Otherwise users stuck on onboarding cannot reach account deletion.
 
 **Admin client fail-fast:** Call `createAdminClient()` immediately after the auth check, before revoke or token purge. If it returns `null`, redirect `/settings?error=...` with `config_error` and stop — do not purge tokens when the service role is missing.
@@ -350,7 +352,7 @@ No new migration. Existing `integration_tokens.user_id` FK with `ON DELETE CASCA
 - [x] 2.3 Authenticated user with Jira token: `/settings` loads, shows email, two-step delete works end-to-end — 719ed94
 - [x] 2.4 User on `/onboarding` (no Jira token): `/settings` accessible; delete works — 719ed94
 - [x] 2.5 Unauthenticated `/settings` redirects to sign-in — 719ed94
-- [ ] 2.6 Failed delete (e.g. unset service role) shows error banner on settings without leaking internals; integration tokens remain intact
+- [x] 2.6 Failed delete (e.g. unset service role) shows error banner on settings without leaking internals; integration tokens remain intact
 - [x] 2.7 After delete, signing in again creates a fresh user (new `auth.users` id) — 719ed94
 
 ### Phase 3: Docs & Production Readiness
@@ -363,5 +365,5 @@ No new migration. Existing `integration_tokens.user_id` FK with `ON DELETE CASCA
 #### Manual
 
 - [x] 3.3 README/AGENTS accurately describe settings and delete flow — 719ed94
-- [ ] 3.4 Production (or staging) delete smoke completes with service role secret set
-- [ ] 3.5 Re-sign-in after delete works (new user, onboarding shown)
+- [x] 3.4 Production (or staging) delete smoke completes with service role secret set
+- [x] 3.5 Re-sign-in after delete works (new user, onboarding shown)

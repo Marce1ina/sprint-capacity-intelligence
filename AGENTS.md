@@ -27,7 +27,7 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 ### Auth flow
 
 - `src/lib/supabase.ts` — creates a Supabase SSR client using `@supabase/ssr` with cookie-based sessions. Uses `astro:env/server` for `SUPABASE_URL` and `SUPABASE_KEY` (server-only secrets declared in astro.config.mjs `env.schema`).
-- `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from protected routes. Enforces Jira onboarding: users without a Jira token are kept on `/onboarding`; users with a token skip onboarding.
+- `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from protected routes. Enforces Jira onboarding: users without a Jira token are kept on `/onboarding`; users with a token skip onboarding. `/settings` is auth-gated but excluded from the Jira onboarding redirect (account deletion must work without a Jira PAT).
 - Google OAuth: `GET /api/auth/google` starts the flow; `GET /api/auth/callback` exchanges the code and redirects to `/onboarding`. No email/password auth.
 - Auth page: `src/pages/auth/signin.astro` (Google sign-in CTA only).
 - Onboarding: `src/pages/onboarding.astro` + `POST /api/onboarding/jira`; Jira validation in `src/lib/services/jira-client.ts`; persistence via `IntegrationTokenService.upsertJiraPat()`.
@@ -38,7 +38,7 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 
 ### Dashboard sprint picker
 
-- `src/pages/dashboard.astro` — Astro shell with sign-out; renders `SprintPicker` React island (`client:load`).
+- `src/pages/dashboard.astro` — Astro shell with `AppNav` (sign-out); renders `SprintPicker` React island (`client:load`).
 - `src/components/dashboard/SprintPicker.tsx` — board/sprint selects, assignee table, full-page spinner, `ServerError` retry banner.
 - `src/components/hooks/use-jira-sprint-picker.ts` — fetches boards → sprints → assignees; selection is ephemeral (React state only).
 - `src/lib/services/jira-client.ts` — `listBoards`, `listActiveFutureSprints`, `getSprintAssignees` (Agile REST + story-point aggregation).

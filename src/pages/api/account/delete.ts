@@ -50,10 +50,19 @@ export const POST: APIRoute = async (context) => {
       return context.redirect(`/settings?error=${encodeURIComponent(accountDeletionErrorMessage("delete_failed"))}`);
     }
 
-    await supabase.auth.signOut();
-  } catch {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "unknown error";
+      // eslint-disable-next-line no-console -- user already deleted; sign-out is best-effort
+      console.error("Sign-out failed after account deletion:", message);
+    }
+
+    return context.redirect("/");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "unknown error";
+    // eslint-disable-next-line no-console -- ops visibility; log without token data
+    console.error("Account deletion failed:", message);
     return context.redirect(`/settings?error=${encodeURIComponent(accountDeletionErrorMessage("delete_failed"))}`);
   }
-
-  return context.redirect("/");
 };
