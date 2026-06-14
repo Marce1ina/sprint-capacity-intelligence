@@ -1,9 +1,10 @@
 ---
 change_id: delete-user-account
 title: EM account deletion and data purge
-status: impl_reviewed
+status: archived
 created: 2026-06-14
 updated: 2026-06-14
+archived_at: 2026-06-14T17:18:52Z
 ---
 
 ## Notes

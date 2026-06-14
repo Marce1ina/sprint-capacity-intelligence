@@ -34,7 +34,7 @@ Engineering Managers commit to sprint scope without knowing whether the team has
 | S-02 | jira-sprint-picker          | select a sprint from Jira and see its assignees                                                                                              | S-01          | FR-003                         | done     |
 | S-03 | assignee-calendar-invite    | invite sprint assignees to connect Google Calendar; assignee connects via invite link                                                        | S-02          | FR-004, FR-005                 | proposed |
 | S-04 | sprint-risk-table           | view a per-person risk table for the selected sprint (story points, meeting hours, context switches, risk level) for each connected assignee | S-02, S-03    | US-01, FR-006, FR-007          | proposed |
-| S-05 | delete-user-account         | permanently delete their account and all associated stored data (integration tokens, profile)                                                | S-01          | Access Control, NFR guardrails | proposed |
+| S-05 | delete-user-account         | permanently delete their account and all associated stored data (integration tokens, profile)                                                | S-01          | Access Control, NFR guardrails | done |
 
 ## Baseline
 
@@ -129,7 +129,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Stored PATs and calendar tokens create a data-retention obligation — off the north-star path but needed for trustworthy handling of user data.
-- **Status:** proposed
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -161,3 +161,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-01: (foundation) minimal schema and secure persistence for Jira PAT and calendar OAuth tokens landed; tokens not exposed in UI or logs.** — Archived 2026-06-14 → `context/archive/2026-06-05-integration-token-store/`. Lesson: —.
 - **S-01: user can sign in with Google and configure Jira access with a Personal Access Token during onboarding.** — Archived 2026-06-14 → `context/archive/2026-06-13-google-auth-jira-onboarding/`. Lesson: —.
 - **S-02: user can select a sprint from Jira and see the sprint's assignees for capacity analysis.** — Archived 2026-06-14 → `context/archive/2026-06-14-jira-sprint-picker/`. Lesson: —.
+- **S-05: EM can permanently delete their account and all associated stored data (integration tokens, profile).** — Archived 2026-06-14 → `context/archive/2026-06-14-delete-user-account/`. Lesson: —.
