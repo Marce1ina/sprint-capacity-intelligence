@@ -102,6 +102,7 @@ npx supabase start
 SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_KEY=<anon key from CLI output>
 TOKEN_ENCRYPTION_KEY=<generate with: openssl rand -base64 32>
+SUPABASE_SERVICE_ROLE_KEY=<service_role key from CLI output>
 ```
 
 5. Apply migrations and seed (creates `integration_tokens` table):
@@ -165,11 +166,12 @@ Per-user integration credentials (Jira PAT, Google Calendar OAuth tokens) are en
 openssl rand -base64 32
 ```
 
-| Variable               | Description                                          |
-| ---------------------- | ---------------------------------------------------- |
-| `TOKEN_ENCRYPTION_KEY` | 32-byte AES key, base64-encoded (server-only secret) |
+| Variable                    | Description                                          |
+| --------------------------- | ---------------------------------------------------- |
+| `TOKEN_ENCRYPTION_KEY`      | 32-byte AES key, base64-encoded (server-only secret) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key from Supabase Dashboard → Settings → API (server-only; required for account deletion) |
 
-`SUPABASE_SERVICE_ROLE_KEY` is not required until cross-user calendar reads (roadmap slice S-04).
+`SUPABASE_SERVICE_ROLE_KEY` is also used by cross-user calendar reads (roadmap slice S-04).
 
 Verify the token store locally (requires Docker + test user credentials):
 
@@ -182,16 +184,18 @@ npx tsx --env-file=.env scripts/verify-integration-tokens.mts
 
 If you prefer to use a hosted Supabase project, add these variables to your `.env` and `.dev.vars` files:
 
-| Variable               | Description                                                 |
-| ---------------------- | ----------------------------------------------------------- |
-| `SUPABASE_URL`         | Project URL from Supabase dashboard → Settings → API        |
-| `SUPABASE_KEY`         | `anon` public key from Supabase dashboard → Settings → API  |
-| `TOKEN_ENCRYPTION_KEY` | 32-byte AES key, base64-encoded (`openssl rand -base64 32`) |
+| Variable                    | Description                                                 |
+| --------------------------- | ----------------------------------------------------------- |
+| `SUPABASE_URL`              | Project URL from Supabase dashboard → Settings → API        |
+| `SUPABASE_KEY`              | `anon` public key from Supabase dashboard → Settings → API  |
+| `TOKEN_ENCRYPTION_KEY`      | 32-byte AES key, base64-encoded (`openssl rand -base64 32`) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key from Supabase dashboard → Settings → API   |
 
 ```
 SUPABASE_URL=https://<project-ref>.supabase.co
 SUPABASE_KEY=<anon-key>
 TOKEN_ENCRYPTION_KEY=<base64-key>
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
 ```
 
 ### Auth routes
@@ -201,8 +205,10 @@ TOKEN_ENCRYPTION_KEY=<base64-key>
 | `/auth/signin`         | Google sign-in page ("Continue with Google")                                 |
 | `/api/auth/google`     | Starts Supabase Google OAuth PKCE flow                                       |
 | `/api/auth/callback`   | Exchanges OAuth code for session; redirects to `/onboarding`                 |
-| `/api/auth/signout`    | Ends session and redirects to `/`                                            |
-| `/onboarding`          | Jira PAT + site URL setup (requires auth; redirects to `/dashboard` if done) |
+| `/api/auth/signout`       | Ends session and redirects to `/`                                            |
+| `/settings`               | Account settings — email, sign-out, two-step account deletion (auth-only)    |
+| `/api/account/delete`     | Permanently deletes account and stored data (POST; requires auth)            |
+| `/onboarding`             | Jira PAT + site URL setup (requires auth; redirects to `/dashboard` if done) |
 | `/api/onboarding/jira` | Validates and saves Jira credentials (POST form)                             |
 | `/dashboard`           | Sprint picker — board/sprint selection and assignee story-point totals       |
 
@@ -256,7 +262,16 @@ npm run build
 npx wrangler deploy
 ```
 
-Set `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
+Set `SUPABASE_URL`, `SUPABASE_KEY`, `TOKEN_ENCRYPTION_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
+
+### Production readiness (account deletion)
+
+Before enabling account deletion in a hosted environment:
+
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` set in Cloudflare Wrangler secrets (and `.dev.vars` locally)
+- [ ] End-to-end delete smoke on deployed Worker URL (sign in → `/settings` → two-step delete → signed out on `/`)
+- [ ] Confirm no orphaned `integration_tokens` for the deleted test user in hosted Supabase Table Editor
+- [ ] Re-sign-in with the same Google account creates a fresh user and shows onboarding
 
 ### Production smoke checklist
 
@@ -270,7 +285,7 @@ Before marking a Jira-integrated deploy as ready, verify hosted configuration en
 
 ## CI
 
-GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as repository secrets in GitHub for the build step.
+GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as repository secrets in GitHub for the build step. `SUPABASE_SERVICE_ROLE_KEY` is not required for CI build but is required at runtime for account deletion.
 
 ## License
 

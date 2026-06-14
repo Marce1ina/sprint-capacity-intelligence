@@ -329,39 +329,39 @@ No new migration. Existing `integration_tokens.user_id` FK with `ON DELETE CASCA
 
 #### Automated
 
-- [ ] 1.1 Linting passes: `npm run lint`
-- [ ] 1.2 Production build passes: `npm run build`
-- [ ] 1.3 Type checking passes as part of build
+- [x] 1.1 Linting passes: `npm run lint` — 719ed94
+- [x] 1.2 Production build passes: `npm run build` — 719ed94
+- [x] 1.3 Type checking passes as part of build — 719ed94
 
 #### Manual
 
-- [ ] 1.4 With valid env, admin client factory returns non-null client in a dev API route or temporary log check
-- [ ] 1.5 `deleteAllTokens` removes both provider rows for a test user (local Supabase)
+- [x] 1.4 With valid env, admin client factory returns non-null client in a dev API route or temporary log check — 719ed94
+- [x] 1.5 `deleteAllTokens` removes both provider rows for a test user (local Supabase) — 719ed94
 
 ### Phase 2: Settings UI & Delete API
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Production build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — 719ed94
+- [x] 2.2 Production build passes: `npm run build` — 719ed94
 
 #### Manual
 
-- [ ] 2.3 Authenticated user with Jira token: `/settings` loads, shows email, two-step delete works end-to-end
-- [ ] 2.4 User on `/onboarding` (no Jira token): `/settings` accessible; delete works
-- [ ] 2.5 Unauthenticated `/settings` redirects to sign-in
+- [x] 2.3 Authenticated user with Jira token: `/settings` loads, shows email, two-step delete works end-to-end — 719ed94
+- [x] 2.4 User on `/onboarding` (no Jira token): `/settings` accessible; delete works — 719ed94
+- [x] 2.5 Unauthenticated `/settings` redirects to sign-in — 719ed94
 - [ ] 2.6 Failed delete (e.g. unset service role) shows error banner on settings without leaking internals; integration tokens remain intact
-- [ ] 2.7 After delete, signing in again creates a fresh user (new `auth.users` id)
+- [x] 2.7 After delete, signing in again creates a fresh user (new `auth.users` id) — 719ed94
 
 ### Phase 3: Docs & Production Readiness
 
 #### Automated
 
-- [ ] 3.1 Linting passes: `npm run lint`
-- [ ] 3.2 Production build passes: `npm run build`
+- [x] 3.1 Linting passes: `npm run lint` — 719ed94
+- [x] 3.2 Production build passes: `npm run build` — 719ed94
 
 #### Manual
 
-- [ ] 3.3 README/AGENTS accurately describe settings and delete flow
+- [x] 3.3 README/AGENTS accurately describe settings and delete flow — 719ed94
 - [ ] 3.4 Production (or staging) delete smoke completes with service role secret set
 - [ ] 3.5 Re-sign-in after delete works (new user, onboarding shown)
