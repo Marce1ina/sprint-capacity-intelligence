@@ -118,6 +118,45 @@ npx supabase stop
 
 The local Studio UI is available at `http://localhost:54323`.
 
+### Google OAuth (sign-in)
+
+Sign-in uses Google via Supabase Auth. Configure once for local dev and again in the hosted Supabase project before production deploy.
+
+#### Google Cloud Console
+
+1. Create an OAuth 2.0 **Web application** client in [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+2. Add **Authorized redirect URIs** pointing at Supabase — **not** your Astro app:
+   - Local: `http://127.0.0.1:54321/auth/v1/callback`
+   - Hosted: `https://<project-ref>.supabase.co/auth/v1/callback`
+3. Copy the client ID and client secret.
+
+#### Supabase (local)
+
+Add to `.env` (read by `supabase start` via env substitution in `supabase/config.toml`):
+
+```
+SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=<google-client-id>
+SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=<google-client-secret>
+```
+
+Restart the local stack after changing credentials:
+
+```bash
+npx supabase stop && npx supabase start
+```
+
+Local `supabase/config.toml` sets `site_url` to `http://127.0.0.1:4321` (Astro dev port) and allow-lists `http://127.0.0.1:4321/api/auth/callback`.
+
+#### Supabase Dashboard (hosted / production)
+
+1. **Authentication → Providers → Google** — enable and paste the Google client ID and secret.
+2. **Authentication → URL Configuration**:
+   - **Site URL**: your Cloudflare Workers origin (e.g. `https://sprint-capacity-intelligence.<account>.workers.dev`)
+   - **Redirect URLs**: add `https://<your-workers-domain>/api/auth/callback` (and preview branch URLs if testing PR deploys)
+3. In Google Cloud, add the hosted Supabase callback URI: `https://<project-ref>.supabase.co/auth/v1/callback`
+
+The Astro app only needs `SUPABASE_URL` and `SUPABASE_KEY` at runtime — Google secrets stay in Supabase config.
+
 ### Integration token encryption
 
 Per-user integration credentials (Jira PAT, Google Calendar OAuth tokens) are encrypted at the application layer before storage. Set `TOKEN_ENCRYPTION_KEY` in `.env`, `.dev.vars`, and production Wrangler secrets:
