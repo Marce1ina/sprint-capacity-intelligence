@@ -30,7 +30,7 @@ Engineering Managers commit to sprint scope without knowing whether the team has
 | ID   | Change ID                   | Outcome (user can …)                                                                                                                         | Prerequisites | PRD refs                       | Status   |
 | ---- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------ | -------- |
 | F-01 | integration-token-store     | (foundation) persist Jira PAT and calendar OAuth tokens securely                                                                             | —             | Access Control, NFR guardrails | done     |
-| S-01 | google-auth-jira-onboarding | sign in with Google and configure Jira PAT during onboarding                                                                                 | F-01          | FR-001, FR-002                 | proposed |
+| S-01 | google-auth-jira-onboarding | sign in with Google and configure Jira PAT during onboarding                                                                                 | F-01          | FR-001, FR-002                 | done     |
 | S-02 | jira-sprint-picker          | select a sprint from Jira and see its assignees                                                                                              | S-01          | FR-003                         | proposed |
 | S-03 | assignee-calendar-invite    | invite sprint assignees to connect Google Calendar; assignee connects via invite link                                                        | S-02          | FR-004, FR-005                 | proposed |
 | S-04 | sprint-risk-table           | view a per-person risk table for the selected sprint (story points, meeting hours, context switches, risk level) for each connected assignee | S-02, S-03    | US-01, FR-006, FR-007          | proposed |
@@ -75,7 +75,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Google OAuth provider configuration in Supabase — Owner: user. Block: no.
 - **Risk:** Baseline auth is email/password only; Google OAuth is net-new work on the critical path — done early because FR-001 gates every downstream slice and calendar access depends on Google identity.
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: Jira sprint picker
 
@@ -145,3 +145,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 ## Done
 
 - **F-01: (foundation) minimal schema and secure persistence for Jira PAT and calendar OAuth tokens landed; tokens not exposed in UI or logs.** — Archived 2026-06-14 → `context/archive/2026-06-05-integration-token-store/`. Lesson: —.
+- **S-01: user can sign in with Google and configure Jira access with a Personal Access Token during onboarding.** — Archived 2026-06-14 → `context/archive/2026-06-13-google-auth-jira-onboarding/`. Lesson: —.

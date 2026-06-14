@@ -1,10 +1,10 @@
 ---
 change_id: google-auth-jira-onboarding
 title: Google sign-in and Jira PAT onboarding
-status: impl_reviewed
+status: archived
 created: 2026-06-13
 updated: 2026-06-14
-archived_at: null
+archived_at: 2026-06-14T11:20:15Z
 ---
 
 ## Notes
