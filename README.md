@@ -194,26 +194,19 @@ SUPABASE_KEY=<anon-key>
 TOKEN_ENCRYPTION_KEY=<base64-key>
 ```
 
-### Email confirmation in local development
-
-By default Supabase requires email confirmation before a user can sign in. To skip this during local development:
-
-1. Open the Supabase dashboard for your project
-2. Go to **Authentication → Email → Confirm email**
-3. Toggle it **off**
-
-Users can then sign in immediately after sign-up without clicking a confirmation link.
-
 ### Auth routes
 
-| Route                 | Description                                                             |
-| --------------------- | ----------------------------------------------------------------------- |
-| `/auth/signin`        | Email/password sign-in form                                             |
-| `/auth/signup`        | Email/password sign-up form                                             |
-| `/auth/confirm-email` | Post-signup "check your inbox" page                                     |
-| `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated) |
+| Route                  | Description                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| `/auth/signin`         | Google sign-in page ("Continue with Google")                                 |
+| `/api/auth/google`     | Starts Supabase Google OAuth PKCE flow                                       |
+| `/api/auth/callback`   | Exchanges OAuth code for session; redirects to `/onboarding`                 |
+| `/api/auth/signout`    | Ends session and redirects to `/`                                            |
+| `/onboarding`          | Jira PAT + site URL setup (requires auth; redirects to `/dashboard` if done) |
+| `/api/onboarding/jira` | Validates and saves Jira credentials (POST form)                             |
+| `/dashboard`           | Protected page (requires auth + Jira token; redirects otherwise)             |
 
-Route protection is handled in `src/middleware.ts`. Add paths to the `PROTECTED_ROUTES` array there to require authentication.
+Route protection and onboarding guards are handled in `src/middleware.ts`.
 
 ## Deployment
 

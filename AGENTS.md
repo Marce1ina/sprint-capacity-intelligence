@@ -27,10 +27,12 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 ### Auth flow
 
 - `src/lib/supabase.ts` — creates a Supabase SSR client using `@supabase/ssr` with cookie-based sessions. Uses `astro:env/server` for `SUPABASE_URL` and `SUPABASE_KEY` (server-only secrets declared in astro.config.mjs `env.schema`).
-- `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from routes listed in `PROTECTED_ROUTES`.
-- API endpoints: `src/pages/api/auth/{signin,signup,signout}.ts`
-- Auth pages: `src/pages/auth/{signin,signup,confirm-email}.astro`
-- Protected page example: `src/pages/dashboard.astro`
+- `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from protected routes. Enforces Jira onboarding: users without a Jira token are kept on `/onboarding`; users with a token skip onboarding.
+- Google OAuth: `GET /api/auth/google` starts the flow; `GET /api/auth/callback` exchanges the code and redirects to `/onboarding`. No email/password auth.
+- Auth page: `src/pages/auth/signin.astro` (Google sign-in CTA only).
+- Onboarding: `src/pages/onboarding.astro` + `POST /api/onboarding/jira`; Jira validation in `src/lib/services/jira-client.ts`; persistence via `IntegrationTokenService.upsertJiraPat()`.
+- Sign-out: `POST /api/auth/signout`
+- Protected pages: `src/pages/dashboard.astro`, `src/pages/onboarding.astro`
 
 ## Environment
 

@@ -372,28 +372,28 @@ Remove email/password auth surfaces, update landing/marketing copy, and document
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — a71a444
+- [x] 2.2 Build passes: `npm run build` — a71a444
 
 #### Manual
 
-- [x] 2.3 New Google user lands on `/onboarding`; cannot reach `/dashboard` until PAT saved
-- [x] 2.4 Valid PAT + site URL → saves → redirects to `/dashboard`; `hasToken('jira')` returns true
-- [x] 2.5 Invalid PAT → error on onboarding page; no row written to `integration_tokens`
-- [x] 2.6 Returning user with Jira token visiting `/onboarding` redirects to `/dashboard`
-- [x] 2.7 PAT and site URL never appear in browser network response bodies or server logs
+- [x] 2.3 New Google user lands on `/onboarding`; cannot reach `/dashboard` until PAT saved — a71a444
+- [x] 2.4 Valid PAT + site URL → saves → redirects to `/dashboard`; `hasToken('jira')` returns true — a71a444
+- [x] 2.5 Invalid PAT → error on onboarding page; no row written to `integration_tokens` — a71a444
+- [x] 2.6 Returning user with Jira token visiting `/onboarding` redirects to `/dashboard` — a71a444
+- [x] 2.7 PAT and site URL never appear in browser network response bodies or server logs — a71a444
 
 ### Phase 3: Legacy Auth Removal & Documentation
 
 #### Automated
 
-- [ ] 3.1 Linting passes: `npm run lint`
-- [ ] 3.2 Build passes: `npm run build`
-- [ ] 3.3 No remaining imports/references to deleted signin/signup routes (grep verification)
+- [x] 3.1 Linting passes: `npm run lint`
+- [x] 3.2 Build passes: `npm run build`
+- [x] 3.3 No remaining imports/references to deleted signin/signup routes (grep verification)
 
 #### Manual
 
-- [ ] 3.4 Landing page shows single sign-in CTA; no signup link
-- [ ] 3.5 `/auth/signup` returns 404
-- [ ] 3.6 Full flow still works: Google sign-in → onboarding → dashboard → sign out
-- [ ] 3.7 README and AGENTS.md accurately describe Google + Jira onboarding setup
+- [x] 3.4 Landing page shows single sign-in CTA; no signup link
+- [x] 3.5 `/auth/signup` returns 404
+- [x] 3.6 Full flow still works: Google sign-in → onboarding → dashboard → sign out
+- [x] 3.7 README and AGENTS.md accurately describe Google + Jira onboarding setup

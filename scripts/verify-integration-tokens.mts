@@ -5,7 +5,7 @@
  * - Docker running with local Supabase: `npx supabase start` then `npx supabase db reset`
  * - `.env` with SUPABASE_URL, SUPABASE_KEY, TOKEN_ENCRYPTION_KEY
  *
- * Test users (create via /auth/signup or let this script sign them up):
+ * Test users (create in Supabase Studio or let this script sign them up via the Auth API):
  * - TEST_USER_EMAIL / TEST_USER_PASSWORD (required)
  * - TEST_USER_B_EMAIL / TEST_USER_B_PASSWORD (optional, for RLS isolation check)
  *
