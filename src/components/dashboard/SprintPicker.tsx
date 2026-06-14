@@ -7,7 +7,8 @@ import { cn } from "@/lib/utils";
 const selectTriggerClassName =
   "w-full border-white/20 bg-white/5 text-white shadow-none focus-visible:border-purple-400/50 focus-visible:ring-purple-400/30 data-[placeholder]:text-blue-100/50";
 
-const selectContentClassName = "border-white/20 bg-[#0f1529] text-white";
+const selectContentClassName =
+  "border-white/20 bg-[#0f1529] text-white data-[side=bottom]:translate-y-0 data-[side=top]:translate-y-0";
 
 export default function SprintPicker() {
   const {
@@ -50,7 +51,7 @@ export default function SprintPicker() {
               <SelectTrigger id="board-select" className={selectTriggerClassName}>
                 <SelectValue placeholder="Select a board" />
               </SelectTrigger>
-              <SelectContent className={selectContentClassName}>
+              <SelectContent className={selectContentClassName} position="popper">
                 {boards.map((board) => (
                   <SelectItem key={board.id} value={String(board.id)}>
                     {board.name}
@@ -74,7 +75,7 @@ export default function SprintPicker() {
               <SelectTrigger id="sprint-select" className={selectTriggerClassName}>
                 <SelectValue placeholder={selectedBoardId === null ? "Select a board first" : "Select a sprint"} />
               </SelectTrigger>
-              <SelectContent className={selectContentClassName}>
+              <SelectContent className={selectContentClassName} position="popper">
                 {sprints.map((sprint) => (
                   <SelectItem key={sprint.id} value={String(sprint.id)}>
                     {sprint.name}
