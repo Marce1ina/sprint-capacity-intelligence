@@ -1,7 +1,8 @@
 ---
 change_id: jira-sprint-picker
 title: "S-02: Jira sprint picker"
-status: impl_reviewed
+status: archived
+archived_at: 2026-06-14T17:03:49Z
 roadmap_id: S-02
 prd_refs: [FR-003]
 created: 2026-06-14
