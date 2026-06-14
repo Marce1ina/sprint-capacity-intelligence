@@ -317,35 +317,35 @@ No database migration required. Ephemeral sprint selection means no schema chang
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Production build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — 0730234
+- [x] 2.2 Production build passes: `npm run build` — 0730234
 
 #### Manual
 
-- [x] 2.3 Unauthenticated request returns 401 JSON
-- [x] 2.4 Authenticated request without Jira token returns 403 JSON
-- [x] 2.5 Authenticated request with missing siteUrl returns 400 JSON
-- [x] 2.6 Authenticated request with valid PAT returns boards JSON
-- [x] 2.7 Valid board ID returns active/future sprints only
-- [x] 2.8 Valid sprint ID returns assignee aggregation with story point totals
-- [x] 2.9 Expired/invalid PAT returns safe error JSON
+- [x] 2.3 Unauthenticated request returns 401 JSON — 0730234
+- [x] 2.4 Authenticated request without Jira token returns 403 JSON — 0730234
+- [x] 2.5 Authenticated request with missing siteUrl returns 400 JSON — 0730234
+- [x] 2.6 Authenticated request with valid PAT returns boards JSON — 0730234
+- [x] 2.7 Valid board ID returns active/future sprints only — 0730234
+- [x] 2.8 Valid sprint ID returns assignee aggregation with story point totals — 0730234
+- [x] 2.9 Expired/invalid PAT returns safe error JSON — 0730234
 
 ### Phase 3: Dashboard Sprint Picker UI
 
 #### Automated
 
-- [ ] 3.1 Linting passes: `npm run lint`
-- [ ] 3.2 Production build passes: `npm run build`
+- [x] 3.1 Linting passes: `npm run lint`
+- [x] 3.2 Production build passes: `npm run build`
 
 #### Manual
 
-- [ ] 3.3 Dashboard loads board dropdown after auth
-- [ ] 3.4 Selecting board loads active/future sprints
-- [ ] 3.5 Selecting sprint shows assignee table with story point totals
-- [ ] 3.6 Full-page spinner visible during fetches
-- [ ] 3.7 Jira failure shows error banner with retry
-- [ ] 3.8 Page refresh clears selection (ephemeral state)
-- [ ] 3.9 Sign-out still works
+- [x] 3.3 Dashboard loads board dropdown after auth
+- [x] 3.4 Selecting board loads active/future sprints
+- [x] 3.5 Selecting sprint shows assignee table with story point totals
+- [x] 3.6 Full-page spinner visible during fetches
+- [x] 3.7 Jira failure shows error banner with retry
+- [x] 3.8 Page refresh clears selection (ephemeral state)
+- [x] 3.9 Sign-out still works
 
 ### Phase 4: Production Readiness
 
