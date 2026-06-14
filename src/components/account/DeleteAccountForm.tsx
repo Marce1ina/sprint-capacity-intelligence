@@ -39,6 +39,7 @@ export default function DeleteAccountForm({ serverError }: Props) {
         <Button
           type="button"
           variant="outline"
+          className="border-white/20 bg-white text-black hover:bg-white/90 hover:text-black"
           onClick={() => {
             setArmed(false);
           }}
