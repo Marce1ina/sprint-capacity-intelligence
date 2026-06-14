@@ -2,7 +2,8 @@ import type { APIRoute } from "astro";
 import { TOKEN_ENCRYPTION_KEY } from "astro:env/server";
 import { createClient } from "@/lib/supabase";
 import { IntegrationTokenService } from "@/lib/services/integration-token-service";
-import { normalizeSiteUrl, validateJiraCredentials } from "@/lib/services/jira-client";
+import { assertAllowedJiraSiteUrl } from "@/lib/jira-site-url";
+import { validateJiraCredentials } from "@/lib/services/jira-client";
 import { JiraValidationError } from "@/types";
 
 export const prerender = false;
@@ -37,7 +38,7 @@ export const POST: APIRoute = async (context) => {
 
   try {
     const service = new IntegrationTokenService(supabase, TOKEN_ENCRYPTION_KEY ?? "");
-    await service.upsertJiraPat(user.id, { pat, siteUrl: normalizeSiteUrl(siteUrl) });
+    await service.upsertJiraPat(user.id, { pat, siteUrl: assertAllowedJiraSiteUrl(siteUrl) });
   } catch {
     return context.redirect("/onboarding?error=Could+not+save+Jira+credentials.+Please+try+again.");
   }

@@ -387,13 +387,13 @@ Remove email/password auth surfaces, update landing/marketing copy, and document
 
 #### Automated
 
-- [x] 3.1 Linting passes: `npm run lint`
-- [x] 3.2 Build passes: `npm run build`
-- [x] 3.3 No remaining imports/references to deleted signin/signup routes (grep verification)
+- [x] 3.1 Linting passes: `npm run lint` — 133ec02
+- [x] 3.2 Build passes: `npm run build` — 133ec02
+- [x] 3.3 No remaining imports/references to deleted signin/signup routes (grep verification) — 133ec02
 
 #### Manual
 
-- [x] 3.4 Landing page shows single sign-in CTA; no signup link
-- [x] 3.5 `/auth/signup` returns 404
-- [x] 3.6 Full flow still works: Google sign-in → onboarding → dashboard → sign out
-- [x] 3.7 README and AGENTS.md accurately describe Google + Jira onboarding setup
+- [x] 3.4 Landing page shows single sign-in CTA; no signup link — 133ec02
+- [x] 3.5 `/auth/signup` returns 404 — 133ec02
+- [x] 3.6 Full flow still works: Google sign-in → onboarding → dashboard → sign out — 133ec02
+- [x] 3.7 README and AGENTS.md accurately describe Google + Jira onboarding setup — 133ec02

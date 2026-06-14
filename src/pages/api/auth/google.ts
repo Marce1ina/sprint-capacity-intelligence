@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { authErrorUserMessage } from "@/lib/auth-errors";
 import { createClient } from "@/lib/supabase";
 
 export const prerender = false;
@@ -19,9 +20,7 @@ export const GET: APIRoute = async (context) => {
   });
 
   if (error || !data.url) {
-    return context.redirect(
-      `/auth/signin?error=${encodeURIComponent(error?.message ?? "Could not start Google sign-in")}`,
-    );
+    return context.redirect(`/auth/signin?error=${encodeURIComponent(authErrorUserMessage(error))}`);
   }
 
   return context.redirect(data.url);

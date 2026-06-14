@@ -1,3 +1,4 @@
+import { assertAllowedJiraSiteUrl } from "@/lib/jira-site-url";
 import { JiraValidationError } from "@/types";
 
 /**
@@ -5,13 +6,7 @@ import { JiraValidationError } from "@/types";
  * not Bearer, when calling `{siteUrl}/rest/api/3/*` directly.
  * See: https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/
  */
-export function normalizeSiteUrl(raw: string): string {
-  let url = raw.trim().replace(/\/+$/, "");
-  if (!/^https?:\/\//i.test(url)) {
-    url = `https://${url}`;
-  }
-  return url.replace(/^http:\/\//i, "https://");
-}
+export { normalizeSiteUrl } from "@/lib/jira-site-url";
 
 function buildBasicAuthHeader(accountEmail: string, pat: string): string {
   const credentials = btoa(`${accountEmail}:${pat}`);
@@ -23,7 +18,7 @@ export async function validateJiraCredentials(siteUrl: string, pat: string, acco
     throw new JiraValidationError("Your account email is required to validate Jira credentials.");
   }
 
-  const normalized = normalizeSiteUrl(siteUrl);
+  const normalized = assertAllowedJiraSiteUrl(siteUrl);
 
   let response: Response;
   try {
@@ -32,8 +27,12 @@ export async function validateJiraCredentials(siteUrl: string, pat: string, acco
         Authorization: buildBasicAuthHeader(accountEmail, pat),
         Accept: "application/json",
       },
+      signal: AbortSignal.timeout(10_000),
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "TimeoutError") {
+      throw new JiraValidationError("Jira site took too long to respond. Please try again.");
+    }
     throw new JiraValidationError("Could not reach your Jira site. Check the site URL and try again.");
   }
 

@@ -4,23 +4,10 @@ import { FormField } from "@/components/auth/FormField";
 import { PasswordToggle } from "@/components/auth/PasswordToggle";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
+import { isAllowedJiraSiteUrl } from "@/lib/jira-site-url";
 
 interface Props {
   serverError?: string | null;
-}
-
-function isValidSiteUrl(value: string): boolean {
-  const trimmed = value.trim();
-  if (!trimmed) return false;
-  if (/^[a-z0-9-]+(\.[a-z0-9-]+)*\.atlassian\.net$/i.test(trimmed)) {
-    return true;
-  }
-  try {
-    const url = new URL(trimmed.includes("://") ? trimmed : `https://${trimmed}`);
-    return url.protocol === "https:" || url.protocol === "http:";
-  } catch {
-    return false;
-  }
 }
 
 export default function JiraPatForm({ serverError }: Props) {
@@ -38,7 +25,7 @@ export default function JiraPatForm({ serverError }: Props) {
 
     if (!siteUrl.trim()) {
       next.siteUrl = "Site URL is required";
-    } else if (!isValidSiteUrl(siteUrl)) {
+    } else if (!isAllowedJiraSiteUrl(siteUrl)) {
       next.siteUrl = "Enter a valid Jira site URL (e.g. https://yourorg.atlassian.net)";
     }
 
