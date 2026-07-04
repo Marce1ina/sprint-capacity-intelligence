@@ -258,5 +258,5 @@ Add `npm run test` to Commands section.
 
 #### Automated
 
-- [ ] 5.1 Fill test-plan §6.1 and §6.2 cookbook patterns
-- [ ] 5.2 Add npm run test to AGENTS.md Commands
+- [x] 5.1 Fill test-plan §6.1 and §6.2 cookbook patterns
+- [x] 5.2 Add npm run test to AGENTS.md Commands

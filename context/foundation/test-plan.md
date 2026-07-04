@@ -83,7 +83,7 @@ of assuming access.
 
 | Layer                | Tool        | Version | Notes                                                                                                                       |
 | -------------------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
-| unit + integration   | Vitest      | TBD     | none yet — see §3 Phase 1; Astro 6 + Cloudflare adapter; use `astro:test` or Vitest with Node/edge environment per research |
+| unit + integration   | Vitest      | ^4.1.9  | `vitest.config.ts` via Astro `getViteConfig()`; `test.environment: "node"`; `src/**/*.test.ts`; see §6.1 |
 | API mocking          | MSW         | TBD     | none yet — see §3 Phase 2; mock Jira/Google at HTTP edge only                                                               |
 | e2e                  | Playwright  | n/a     | deferred — integration catches auth/token/Jira contracts cheaper; revisit only if cookie+SSR failures escape                |
 | accessibility        | axe-core    | n/a     | excluded per §7 (interview Q5)                                                                                              |
@@ -120,11 +120,175 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.1 Adding a unit test
 
-TBD — see §3 Phase 1 (token encryption, risk-band pure function fixtures).
+**Where tests live.** Colocate with the module under test: `src/lib/foo.test.ts` next to `src/lib/foo.ts`. Shared helpers only in `src/test/` (secret scanner, mock factories, fixtures).
+
+**Run locally.**
+
+```bash
+npm run test              # full suite once
+npm run test:watch        # watch mode
+npm run test -- path/to/file.test.ts   # single file
+```
+
+**Vitest config.** `vitest.config.ts` uses Astro `getViteConfig()` with `test.environment: "node"` and `include: ["src/**/*.test.ts"]`. Path alias `@/` resolves the same as the app.
+
+**Pure-function tests (Risk #2, #4).** Import the function directly; no HTTP or DB. Example targets: `jsonError`, `mapJiraClientError`, `authErrorUserMessage`, `encryptTokenPayload` / `decryptTokenPayload`.
+
+```typescript
+import { describe, expect, it } from "vitest";
+import { jsonError } from "@/lib/jira-api-context";
+
+describe("jsonError", () => {
+  it("returns exactly { error: message }", async () => {
+    const response = jsonError(401, "Authentication required.");
+    expect(response.status).toBe(401);
+    expect(await response.json()).toEqual({ error: "Authentication required." });
+  });
+});
+```
+
+**Secret-leak scans in unit tests.** Use `@/test/secret-scan` — never a top-level key denylist. Inject a unique probe string (`SECRET_PROBE` from `@/test/fixtures`) into errors or mock token payloads; assert it never appears in serialized output.
+
+```typescript
+import { SECRET_PROBE } from "@/test/fixtures";
+import { assertNoSecretProbe } from "@/test/secret-scan";
+
+assertNoSecretProbe(await response.json(), SECRET_PROBE);
+```
+
+- `assertNoSecretProbe(value, probe)` — throws with JSON paths where probe appears.
+- `findSecretProbePaths(value, probe)` — returns paths without throwing (debugging).
+- `assertResponseBodyHasNoSecretProbe(response, probe)` — parses Response body then scans (integration-friendly).
+
+**Mocking session-bound services.** When a unit test touches code that calls `IntegrationTokenService`, mock the module once at file top:
+
+```typescript
+import { integrationTokenServiceMockModule, mockGetJiraPat } from "@/test/mock-integration-token-service";
+
+vi.mock("@/lib/services/integration-token-service", () => integrationTokenServiceMockModule());
+```
+
+Configure return values per test with `mockGetJiraPat.mockResolvedValue(...)` in `beforeEach`.
+
+**Static boundary checks.** For “must not import X” invariants (e.g. service-role client), add a small test that walks `src/` imports — see `src/lib/service-role-boundary.test.ts`.
 
 ### 6.2 Adding an integration test
 
-TBD — see §3 Phase 1 (auth redirect contract, API response secret scan).
+Integration tests import Astro middleware or API route handlers and invoke them with a mock `APIContext` — no browser, no full server.
+
+**Mock APIContext factory.** `@/test/mock-api-context`:
+
+```typescript
+import { createMockApiContext, createMockUser } from "@/test/mock-api-context";
+
+const context = createMockApiContext({
+  url: "http://localhost/dashboard",
+  user: createMockUser({ id: "user-a" }),
+  method: "GET",
+});
+```
+
+- `context.locals.user` — set via `user` option (`null` = unauthenticated).
+- `context.redirect` — Vitest spy; returns `302` Response (assert `Location` header).
+- `context.cookies` — in-memory stub for cookie-dependent routes.
+
+**Middleware handler import pattern.** Middleware resolves the user from Supabase on every request — mock `createClient` (not `locals.user` alone) before importing `onRequest`. Full file: `src/middleware.auth-gates.test.ts`.
+
+```typescript
+import { vi } from "vitest";
+import type { APIContext } from "astro";
+import { integrationTokenServiceMockModule, mockHasToken } from "@/test/mock-integration-token-service";
+import { mockAstroEnvServer } from "@/test/mock-server-deps";
+import { createMockApiContext } from "@/test/mock-api-context";
+
+const mockGetUser = vi.fn();
+
+vi.mock("astro:env/server", () => mockAstroEnvServer);
+vi.mock("@/lib/supabase", () => ({
+  createClient: (): { auth: { getUser: typeof mockGetUser } } => ({
+    auth: { getUser: mockGetUser },
+  }),
+}));
+vi.mock("@/lib/services/integration-token-service", () => integrationTokenServiceMockModule());
+
+import { onRequest } from "@/middleware";
+
+type MiddlewareFn = (context: APIContext, next: () => Response | Promise<Response>) => Response | Promise<Response>;
+const middleware = onRequest as unknown as MiddlewareFn;
+
+mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+const next = vi.fn(() => new Response("ok", { status: 200 }));
+const response = await middleware(createMockApiContext({ url: "http://localhost/dashboard" }), next);
+
+expect(response.status).toBe(302);
+expect(response.headers.get("Location")).toContain("/auth/signin");
+expect(next).not.toHaveBeenCalled();
+```
+
+Mock `@/lib/supabase` via **`createClient` → `auth.getUser`** and `@/lib/services/integration-token-service` (`hasToken`) so middleware never hits real DB.
+
+**API route handler pattern.** Mock env + Supabase + token service + external HTTP at file top; import handler **after** mocks (Vitest hoisting). Full file: `src/pages/api/jira/jira-routes-secret-scan.test.ts`.
+
+```typescript
+import { afterEach, vi } from "vitest";
+import { SECRET_PROBE } from "@/test/fixtures";
+import { mockJiraFetchSuccess, setupAuthenticatedJiraUser, boardsPage } from "@/test/jira-route-mocks";
+import { integrationTokenServiceMockModule } from "@/test/mock-integration-token-service";
+import { mockAstroEnvServer } from "@/test/mock-server-deps";
+import { supabaseClientMockModule } from "@/test/mock-supabase-client";
+import { assertResponseBodyHasNoSecretProbe } from "@/test/secret-scan";
+
+vi.mock("astro:env/server", () => mockAstroEnvServer);
+vi.mock("@/lib/supabase", () => supabaseClientMockModule());
+vi.mock("@/lib/services/integration-token-service", () => integrationTokenServiceMockModule());
+
+import { GET } from "@/pages/api/jira/boards";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+mockJiraFetchSuccess(boardsPage);
+const response = await GET(setupAuthenticatedJiraUser());
+await assertResponseBodyHasNoSecretProbe(response, SECRET_PROBE);
+```
+
+Use `@/test/jira-route-mocks` for Jira `fetch` stubs (`mockJiraFetchSuccess`, `mockJiraFetchUnauthorized`). Always scan success **and** error responses for probe leakage.
+
+**RLS two-user fixture (Risk #5).** Real Supabase + real RLS — do not mock `IntegrationTokenService` for isolation proofs.
+
+Prerequisites (local only) — all must be set for `isRlsSuiteEnabled()` to return true:
+
+1. `npx supabase start` (Docker).
+2. Copy env from `.env.example`; set:
+   - `SUPABASE_URL` (localhost or 127.0.0.1 only — safety gate)
+   - `SUPABASE_KEY`
+   - `TOKEN_ENCRYPTION_KEY`
+3. Configure two distinct test account credentials in `.env` (auto-created on first run via `signInOrSignUp`):
+   - `TEST_USER_EMAIL` / `TEST_USER_PASSWORD`
+   - `TEST_USER_B_EMAIL` / `TEST_USER_B_PASSWORD`
+
+Helpers in `@/test/rls-fixtures`:
+
+- `isRlsSuiteEnabled()` — true only when local URL + all credentials above present.
+- `describe.skipIf(!isRlsSuiteEnabled())` — default `npm run test` passes without Docker.
+- `createSessionClient()`, `signInOrSignUp()`, `requireRlsTestCredentials()`, `requireEncryptionKey()`.
+
+Run RLS suite explicitly (serial, env-file loaded):
+
+```bash
+npm run test:rls
+```
+
+**When to skip RLS locally vs CI.**
+
+| Context | Default `npm run test` | `npm run test:rls` |
+| ------- | ---------------------- | ------------------ |
+| No Docker / missing env | RLS file skipped (`skipIf`) | RLS file skipped (`skipIf`) |
+| Local Supabase + credentials complete | RLS runs in parallel full suite | **preferred** — serial single-worker run |
+| CI (Phase 4+) | planned: skip or gate on secrets | planned: optional job with Supabase service |
+
+Never point RLS tests at hosted/production Supabase — `isLocalSupabaseUrl()` enforces localhost only.
 
 ### 6.3 Adding an e2e test
 
@@ -140,7 +304,7 @@ TBD — see §3 Phase 3 (calendar-connected assignee inclusion + qualitative ban
 
 ### 6.6 Per-rollout-phase notes
 
-(Optional — filled as phases complete.)
+**Phase 1 — Test runner bootstrap + security-critical paths** (`context/changes/testing-security-critical-paths/`): Vitest bootstrap; Risks #2 (token leakage scans), #3 (middleware/OAuth/API auth gates), #5 (two-user RLS). Key files: `src/test/secret-scan.ts`, `src/test/mock-api-context.ts`, `src/test/rls-fixtures.ts`, `src/middleware.auth-gates.test.ts`, `src/lib/services/integration-token-service.rls.test.ts`.
 
 ## 7. What We Deliberately Don't Test
 

@@ -15,6 +15,7 @@
 - `npm run dev` — run local development server.
 - `npm run lint` — run ESLint checks.
 - `npm run build` — run production build.
+- `npm run test` — run Vitest unit + integration suite once (`test:watch` for watch mode; `test:rls` for local Supabase RLS isolation tests).
 
 ## Architecture
 
