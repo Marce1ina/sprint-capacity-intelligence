@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:rls": "vitest run src/lib/services/integration-token-service.rls.test.ts --pool forks --maxWorkers 1"
+    "test:rls": "node --env-file=.env ./node_modules/vitest/vitest.mjs run src/lib/services/integration-token-service.rls.test.ts --pool forks --maxWorkers 1"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
