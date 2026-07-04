@@ -252,7 +252,7 @@ Add `npm run test` to Commands section.
 
 #### Manual
 
-- [ ] 4.4 Run RLS suite against local Supabase with two test users
+- [x] 4.4 Run RLS suite against local Supabase with two test users
 
 ### Phase 5: Cookbook + Docs
 

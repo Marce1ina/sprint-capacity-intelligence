@@ -1,7 +1,7 @@
 ---
 change_id: testing-security-critical-paths
 title: Test runner bootstrap and security-critical paths
-status: impl_reviewed
+status: implemented
 updated: 2026-07-04
 phase_3_reviewed: 2026-07-04
 phase_4_reviewed: 2026-07-04
