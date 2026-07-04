@@ -246,9 +246,9 @@ Add `npm run test` to Commands section.
 
 #### Automated
 
-- [x] 4.1 Integration two-user RLS suite (read, upsert, delete)
-- [x] 4.2 Unit test resolveJiraApiContext calls getJiraPat with session user.id
-- [x] 4.3 Static service-role boundary check
+- [x] 4.1 Integration two-user RLS suite (read, upsert, delete) — 228b172
+- [x] 4.2 Unit test resolveJiraApiContext calls getJiraPat with session user.id — 228b172
+- [x] 4.3 Static service-role boundary check — 228b172
 
 #### Manual
 
