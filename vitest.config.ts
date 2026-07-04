@@ -1,7 +1,8 @@
 /// <reference types="vitest/config" />
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
-import { envField, getViteConfig } from "astro/config";
+import { getViteConfig } from "astro/config";
+import { serverEnvSchema } from "./src/lib/env-schema";
 
 export default getViteConfig(
   {
@@ -16,12 +17,7 @@ export default getViteConfig(
     output: "server",
     integrations: [react()],
     env: {
-      schema: {
-        SUPABASE_URL: envField.string({ context: "server", access: "secret", optional: true }),
-        SUPABASE_KEY: envField.string({ context: "server", access: "secret", optional: true }),
-        TOKEN_ENCRYPTION_KEY: envField.string({ context: "server", access: "secret", optional: true }),
-        SUPABASE_SERVICE_ROLE_KEY: envField.string({ context: "server", access: "secret", optional: true }),
-      },
+      schema: serverEnvSchema,
     },
   },
 );
