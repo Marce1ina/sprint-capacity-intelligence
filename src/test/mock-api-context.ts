@@ -23,7 +23,9 @@ function createMockCookies(): AstroCookies {
       store.delete(name);
     },
     headers: () => new Headers(),
-    merge: () => {},
+    merge: () => {
+      /* AstroCookies.merge noop for tests */
+    },
   } as AstroCookies;
 }
 
@@ -36,7 +38,10 @@ export function createMockApiContext(options: MockApiContextOptions = {}): APICo
     headers,
   });
 
-  const redirect = vi.fn((location: string) => Response.redirect(location, 302));
+  const redirect = vi.fn((location: string) => {
+    const target = location.startsWith("http") ? location : new URL(location, url.origin).toString();
+    return Response.redirect(target, 302);
+  });
 
   return {
     url,
@@ -69,5 +74,5 @@ export function createMockUser(overrides: Partial<User> = {}): User {
     user_metadata: {},
     created_at: "2026-01-01T00:00:00.000Z",
     ...overrides,
-  } as User;
+  } satisfies User;
 }

@@ -228,11 +228,11 @@ Add `npm run test` to Commands section.
 
 #### Automated
 
-- [ ] 2.1 Unit tests for JSON error contract and resolveJiraApiContext error branches
-- [ ] 2.2 Unit tests for auth-errors and jira-client error sanitization
-- [ ] 2.3 Unit tests for encryption round-trip
-- [ ] 2.4 Integration route handler smoke with probe PAT and recursive scan
-- [ ] 2.5 Integration redirect route secret scan and optional log spy
+- [x] 2.1 Unit tests for JSON error contract and resolveJiraApiContext error branches
+- [x] 2.2 Unit tests for auth-errors and jira-client error sanitization
+- [x] 2.3 Unit tests for encryption round-trip
+- [x] 2.4 Integration route handler smoke with probe PAT and recursive scan
+- [x] 2.5 Integration redirect route secret scan and optional log spy
 
 ### Phase 3: Risk #3 — Auth Gate Contracts
 

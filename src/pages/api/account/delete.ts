@@ -33,10 +33,9 @@ export const POST: APIRoute = async (context) => {
     try {
       const googleTokens = await tokenService.getGoogleCalendarTokens(user.id);
       refreshToken = googleTokens?.refreshToken;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "unknown error";
+    } catch {
       // eslint-disable-next-line no-console -- best-effort revoke; log without token data
-      console.error("Google token read failed during account deletion:", message);
+      console.error("Google token read failed during account deletion");
     }
 
     if (refreshToken) {

@@ -65,12 +65,12 @@ Each row is a discrete rollout phase that will open its own change folder
 via `/10x-new`. Status moves left-to-right through the values below; the
 orchestrator updates Status as artifacts appear on disk.
 
-| #   | Phase name                                      | Goal (one line)                                                      | Risks covered | Test types                 | Status      | Change folder                                    |
-| --- | ----------------------------------------------- | -------------------------------------------------------------------- | ------------- | -------------------------- | ----------- | ------------------------------------------------ |
-| 1   | Test runner bootstrap + security-critical paths | Bootstrap Vitest; prove tokens stay secret and auth gates hold       | #2, #3, #5    | unit + integration         | planned     | context/changes/testing-security-critical-paths/ |
-| 2   | Jira data integrity                             | Catch assignee/point aggregation regressions at the HTTP edge        | #6            | integration (MSW/fixtures) | not started | —                                                |
-| 3   | North-star risk + calendar connect              | Prove connected assignees appear with correct qualitative risk bands | #1, #4, #7    | unit + integration         | not started | —                                                |
-| 4   | Quality-gates wiring                            | Run test suite in CI on every PR                                     | cross-cutting | CI gate                    | not started | —                                                |
+| #   | Phase name                                      | Goal (one line)                                                      | Risks covered | Test types                 | Status       | Change folder                                    |
+| --- | ----------------------------------------------- | -------------------------------------------------------------------- | ------------- | -------------------------- | ------------ | ------------------------------------------------ |
+| 1   | Test runner bootstrap + security-critical paths | Bootstrap Vitest; prove tokens stay secret and auth gates hold       | #2, #3, #5    | unit + integration         | implementing | context/changes/testing-security-critical-paths/ |
+| 2   | Jira data integrity                             | Catch assignee/point aggregation regressions at the HTTP edge        | #6            | integration (MSW/fixtures) | not started  | —                                                |
+| 3   | North-star risk + calendar connect              | Prove connected assignees appear with correct qualitative risk bands | #1, #4, #7    | unit + integration         | not started  | —                                                |
+| 4   | Quality-gates wiring                            | Run test suite in CI on every PR                                     | cross-cutting | CI gate                    | not started  | —                                                |
 
 ## 4. Stack
 
