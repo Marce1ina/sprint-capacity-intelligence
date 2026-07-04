@@ -74,6 +74,21 @@ describe("resolveJiraApiContext", () => {
     assertNoSecretProbe(body, SECRET_PROBE);
   });
 
+  it("calls getJiraPat with session user.id from locals.user", async () => {
+    // Binds ownership to context.locals.user.id (see jira-api-context.ts getJiraPat(user.id)).
+    const user = createMockUser({ id: "session-user-uuid-1234" });
+    mockGetJiraPat.mockResolvedValue({
+      pat: "pat-for-ownership-test",
+      siteUrl: TEST_JIRA_SITE,
+    });
+
+    const context = createMockApiContext({ user });
+    await resolveJiraApiContext(context);
+
+    expect(mockGetJiraPat).toHaveBeenCalledTimes(1);
+    expect(mockGetJiraPat).toHaveBeenCalledWith("session-user-uuid-1234");
+  });
+
   it("returns JiraApiContext on success and mistaken JSON serialization would leak probe", async () => {
     mockGetJiraPat.mockResolvedValue({
       pat: SECRET_PROBE,
