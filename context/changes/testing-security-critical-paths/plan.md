@@ -238,9 +238,9 @@ Add `npm run test` to Commands section.
 
 #### Automated
 
-- [x] 3.1 Integration middleware redirect matrix
-- [x] 3.2 Integration OAuth callback contract
-- [x] 3.3 Integration API auth JSON contract
+- [x] 3.1 Integration middleware redirect matrix — 2116936
+- [x] 3.2 Integration OAuth callback contract — 2116936
+- [x] 3.3 Integration API auth JSON contract — 2116936
 
 ### Phase 4: Risk #5 — Cross-User Token Isolation
 
