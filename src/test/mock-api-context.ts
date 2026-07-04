@@ -26,7 +26,7 @@ function createMockCookies(): AstroCookies {
     merge: () => {
       /* AstroCookies.merge noop for tests */
     },
-  } as AstroCookies;
+  } as unknown as AstroCookies;
 }
 
 /** Minimal APIContext for importing route handlers and middleware in Vitest. */
@@ -60,7 +60,7 @@ export function createMockApiContext(options: MockApiContextOptions = {}): APICo
     preferredLocaleList: undefined,
     rewrite: vi.fn(),
     isPrerendered: false,
-  } as APIContext;
+  } as unknown as APIContext;
 }
 
 /** Mock user fixture with overridable fields for auth-gated route tests. */

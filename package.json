@@ -7,9 +7,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "prepare": "husky",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:rls": "node --env-file=.env ./node_modules/vitest/vitest.mjs run src/lib/services/integration-token-service.rls.test.ts --pool forks --maxWorkers 1"
@@ -66,6 +68,9 @@
   "lint-staged": {
     "*.{ts,tsx,astro}": [
       "eslint --fix"
+    ],
+    "*.{ts,tsx}": [
+      "bash .husky/run-staged-tests.sh"
     ],
     "*.{json,css,md}": [
       "prettier --write"
