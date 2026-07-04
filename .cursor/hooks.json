@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "type": "prompt",
+        "prompt": "Am I using expensive LLM model for dummy task? If yes, ask for confirmation before executing. Consider default model cheap.",
+        "timeout": 60
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": ".cursor/hooks/lint-edited-file.sh",
+        "matcher": "Write|StrReplace"
+      },
+      {
+        "command": ".cursor/hooks/test-edited-file.sh",
+        "matcher": "Write|StrReplace"
+      }
+    ]
+  }
+}
