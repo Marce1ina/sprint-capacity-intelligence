@@ -77,7 +77,7 @@ const scriptsConfig = tseslint.config({
 });
 
 export default tseslint.config(
-  { ignores: [".cursor/**"] },
+  { ignores: [".cursor/**", ".claude/**"] },
   includeIgnoreFile(gitignorePath),
   baseConfig,
   reactConfig,

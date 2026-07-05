@@ -11,6 +11,9 @@ for file in "$@"; do
     *) continue ;;
   esac
 
+  # Only process files under src/ — skip skill templates and other non-project TS
+  [[ "$file" == src/* ]] || continue
+
   if [[ "$file" == *.test.ts ]]; then
     test_files+=("$file")
   else
