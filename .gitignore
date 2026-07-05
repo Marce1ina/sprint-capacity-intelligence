@@ -27,3 +27,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 auth.json
+playwright/.auth/
+.playwright-cli/
+test-results/
