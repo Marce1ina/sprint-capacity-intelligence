@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-07-04
+> Last updated: 2026-07-05
 
 ## 1. Strategy
 
@@ -49,15 +49,15 @@ research's job, see §1 principle #3).
 
 ### Risk Response Guidance
 
-| Risk | What would prove protection                                                                                                                                                                                                  | Must challenge                                                                                     | Context `/10x-research` must ground                                                                            | Likely cheapest layer                                        | Anti-pattern to avoid                                                                                    |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| #1   | Connected assignee with valid calendar token appears in risk table with non-empty metrics for the selected sprint                                                                                                            | "OAuth succeeded" implies row inclusion; partial-results policy silently drops valid users         | Calendar-connect persistence shape; assignee-to-user mapping; sprint window filter; table inclusion rules      | integration (mocked Google Calendar + DB)                    | Happy-path single-assignee e2e; asserting table length without verifying identity match                  |
-| #2   | No API route, error body, or client-visible payload contains plaintext PAT, refresh token, or decrypted calendar credential                                                                                                  | Redacted error messages still leak secrets in `details` fields; redirect query params echo secrets | Central JSON error contract; every route response builder; error-translation path; logging near token reads    | unit (response-shape assertions) + integration (route smoke) | Asserting "no token key in JSON" while value lives under nested field; logging spy that never runs in CI |
-| #3   | Unauthenticated page request redirects to sign-in; authenticated session with Jira token reaches dashboard (OAuth callback alone lands onboarding); expired session on page nav redirects to sign-in, not silent API success | Middleware redirect once implies OAuth callback cookie write and Jira onboarding gate are covered  | Middleware route list; OAuth callback cookie write; Jira onboarding redirect; protected vs public route matrix | integration (request → redirect/status)                      | Full browser e2e for every auth edge; mocking Supabase instead of asserting redirect contract            |
-| #4   | Given fixed workload + meeting + context-switch inputs, risk band matches the documented qualitative mapping (not numeric precision)                                                                                         | Copying production threshold code into test expected value (oracle problem)                        | Risk algorithm inputs/outputs; band boundary fixtures from requirements; sprint window boundaries              | unit (pure function on fixtures)                             | Snapshot of entire table; testing UI color classes instead of band assignment                            |
-| #5   | User A cannot fetch, decrypt, or overwrite User B's integration tokens (sprint-analysis IDOR when S-04 schema ships)                                                                                                         | "Requires login" equals authorization; Jira sprintId alone is not cross-user app IDOR              | RLS policies; route ownership checks; service-role usage boundaries                                            | integration (two-user fixture against real DB)               | Only testing anonymous vs authenticated; over-mocking DB so RLS never executes                           |
-| #6   | Sprint assignee table matches known Jira issue set: every assignee listed, story points summed correctly, unassigned row when applicable                                                                                     | First page of Jira results represents full sprint                                                  | Jira pagination; custom story-point field resolution; empty/null assignee handling                             | integration (MSW or recorded fixtures at HTTP edge)          | Mocking internal aggregator so Jira contract drift is invisible                                          |
-| #7   | Analysis taking >2s exposes continuous visible progress until results render                                                                                                                                                 | Spinner exists on mount therefore long jobs are covered                                            | Async job shape (if any); client polling/loading state triggers; timeout thresholds                            | integration or manual smoke                                  | Brittle `setTimeout` in test; e2e with real 3s Jira latency                                              |
+| Risk | What would prove protection                                                                                                                                                                                                  | Must challenge                                                                                     | Context `/10x-research` must ground                                                                            | Likely cheapest layer                                                                 | Anti-pattern to avoid                                                                                                              |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| #1   | Connected assignee with valid calendar token appears in risk table with non-empty metrics for the selected sprint                                                                                                            | "OAuth succeeded" implies row inclusion; partial-results policy silently drops valid users         | Calendar-connect persistence shape; assignee-to-user mapping; sprint window filter; table inclusion rules      | integration (mocked Google Calendar + DB)                                             | Happy-path single-assignee e2e; asserting table length without verifying identity match                                            |
+| #2   | No API route, error body, or client-visible payload contains plaintext PAT, refresh token, or decrypted calendar credential                                                                                                  | Redacted error messages still leak secrets in `details` fields; redirect query params echo secrets | Central JSON error contract; every route response builder; error-translation path; logging near token reads    | unit (response-shape assertions) + integration (route smoke)                          | Asserting "no token key in JSON" while value lives under nested field; logging spy that never runs in CI                           |
+| #3   | Unauthenticated page request redirects to sign-in; authenticated session with Jira token reaches dashboard (OAuth callback alone lands onboarding); expired session on page nav redirects to sign-in, not silent API success | Middleware redirect once implies OAuth callback cookie write and Jira onboarding gate are covered  | Middleware route list; OAuth callback cookie write; Jira onboarding redirect; protected vs public route matrix | integration (request → redirect/status)                                               | Full browser e2e for every auth edge; mocking Supabase instead of asserting redirect contract                                      |
+| #4   | Given fixed workload + meeting + context-switch inputs, risk band matches the documented qualitative mapping (not numeric precision)                                                                                         | Copying production threshold code into test expected value (oracle problem)                        | Risk algorithm inputs/outputs; band boundary fixtures from requirements; sprint window boundaries              | unit (pure function on fixtures)                                                      | Snapshot of entire table; testing UI color classes instead of band assignment                                                      |
+| #5   | User A cannot fetch, decrypt, or overwrite User B's integration tokens (sprint-analysis IDOR when S-04 schema ships)                                                                                                         | "Requires login" equals authorization; Jira sprintId alone is not cross-user app IDOR              | RLS policies; route ownership checks; service-role usage boundaries                                            | integration (two-user fixture against real DB)                                        | Only testing anonymous vs authenticated; over-mocking DB so RLS never executes                                                     |
+| #6   | Sprint assignee table matches known Jira issue set: every assignee listed, story points summed correctly, unassigned row when applicable                                                                                     | First page of Jira results represents full sprint                                                  | Jira pagination; custom story-point field resolution; empty/null assignee handling                             | integration (MSW or recorded fixtures at HTTP edge)                                   | Mocking internal aggregator so Jira contract drift is invisible                                                                    |
+| #7   | Analysis taking >2s exposes continuous visible progress until results render                                                                                                                                                 | Spinner exists on mount therefore long jobs are covered                                            | Async job shape (if any); client polling/loading state triggers; timeout thresholds                            | e2e (Playwright; stub slow Jira fetch, assert spinner visible then hidden on success) | Asserting spinner exists on mount without verifying it disappears on result; e2e with real 3s Jira latency instead of mocked delay |
 
 ## 3. Phased Rollout
 
@@ -65,12 +65,13 @@ Each row is a discrete rollout phase that will open its own change folder
 via `/10x-new`. Status moves left-to-right through the values below; the
 orchestrator updates Status as artifacts appear on disk.
 
-| #   | Phase name                                      | Goal (one line)                                                      | Risks covered | Test types                 | Status       | Change folder                                    |
-| --- | ----------------------------------------------- | -------------------------------------------------------------------- | ------------- | -------------------------- | ------------ | ------------------------------------------------ |
-| 1   | Test runner bootstrap + security-critical paths | Bootstrap Vitest; prove tokens stay secret and auth gates hold       | #2, #3, #5    | unit + integration         | implementing | context/changes/testing-security-critical-paths/ |
-| 2   | Jira data integrity                             | Catch assignee/point aggregation regressions at the HTTP edge        | #6            | integration (MSW/fixtures) | not started  | —                                                |
-| 3   | North-star risk + calendar connect              | Prove connected assignees appear with correct qualitative risk bands | #1, #4, #7    | unit + integration         | not started  | —                                                |
-| 4   | Quality-gates wiring                            | Run test suite in CI on every PR                                     | cross-cutting | CI gate                    | not started  | —                                                |
+| #   | Phase name                                      | Goal (one line)                                                                                   | Risks covered | Test types                 | Status       | Change folder                                    |
+| --- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------- | -------------------------- | ------------ | ------------------------------------------------ |
+| 1   | Test runner bootstrap + security-critical paths | Bootstrap Vitest; prove tokens stay secret and auth gates hold                                    | #2, #3, #5    | unit + integration         | implementing | context/changes/testing-security-critical-paths/ |
+| 2   | Jira data integrity                             | Catch assignee/point aggregation regressions at the HTTP edge                                     | #6            | integration (MSW/fixtures) | not started  | —                                                |
+| 3   | North-star risk + calendar connect              | Prove connected assignees appear with correct qualitative risk bands                              | #1, #4, #7    | unit + integration         | not started  | —                                                |
+| 4   | Quality-gates wiring                            | Run test suite in CI on every PR                                                                  | cross-cutting | CI gate                    | not started  | —                                                |
+| 5   | E2E loading-state smoke                         | Prove sprint-fetch progress indicator is visible in a real browser during a stubbed slow response | #7            | e2e (Playwright)           | not started  | —                                                |
 
 ## 4. Stack
 
@@ -81,19 +82,19 @@ plus the MCP/tools actually exposed in the current session. If a useful docs
 or search MCP such as Context7 or Exa.ai is not available, say that instead
 of assuming access.
 
-| Layer                | Tool        | Version | Notes                                                                                                                       |
-| -------------------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
-| unit + integration   | Vitest      | ^4.1.9  | `vitest.config.ts` via Astro `getViteConfig()`; `test.environment: "node"`; `src/**/*.test.ts`; see §6.1 |
-| API mocking          | MSW         | TBD     | none yet — see §3 Phase 2; mock Jira/Google at HTTP edge only                                                               |
-| e2e                  | Playwright  | n/a     | deferred — integration catches auth/token/Jira contracts cheaper; revisit only if cookie+SSR failures escape                |
-| accessibility        | axe-core    | n/a     | excluded per §7 (interview Q5)                                                                                              |
-| (optional) AI-native | browser MCP | n/a     | available in session — manual smoke only; not for CI                                                                        |
+| Layer                | Tool        | Version | Notes                                                                                                                                                                                                      |
+| -------------------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| unit + integration   | Vitest      | ^4.1.9  | `vitest.config.ts` via Astro `getViteConfig()`; `test.environment: "node"`; `src/**/*.test.ts`; see §6.1                                                                                                   |
+| API mocking          | MSW         | TBD     | none yet — see §3 Phase 2; mock Jira/Google at HTTP edge only                                                                                                                                              |
+| e2e                  | Playwright  | latest  | `@playwright/cli` installed globally; scoped to Risk #7 loading-state smoke (Phase 5). Do not use for auth/token/Jira — integration is cheaper there. `auth.json` state file in project root (gitignored). |
+| accessibility        | axe-core    | n/a     | excluded per §7 (interview Q5)                                                                                                                                                                             |
+| (optional) AI-native | browser MCP | n/a     | available in session — manual smoke only; not for CI                                                                                                                                                       |
 
 **Stack grounding tools (current session):**
 
 - Docs: Context7 (`user-context7`) — available; Vitest/Astro test setup to be verified during Phase 1 research; checked: 2026-07-04
 - Search: web search MCP — available for tool status discovery; Exa.ai not available in current session; checked: 2026-07-04
-- Runtime/browser: cursor-ide-browser — available for manual north-star smoke; not a CI substitute; checked: 2026-07-04
+- Runtime/browser: `playwright-cli` (installed 2026-07-05) — available for automated E2E (Phase 5); `auth.json` session state captured; checked: 2026-07-05
 - Provider/platform: GitHub Actions (lint+build today) — CI test gate lands in §3 Phase 4; Cloudflare/Supabase MCPs not exposed; checked: 2026-07-04
 
 ## 5. Quality Gates
@@ -102,15 +103,15 @@ The full set of gates that must pass before a change reaches production.
 "Required for §3 Phase <N>" means the gate is enforced once that rollout
 phase lands; before that, the gate is `planned`.
 
-| Gate                        | Where                | Required?                 | Catches                                       |
-| --------------------------- | -------------------- | ------------------------- | --------------------------------------------- |
-| lint + typecheck            | local + CI           | required                  | syntactic / type drift                        |
-| unit + integration          | local + CI           | required after §3 Phase 1 | logic regressions, token leakage, auth gates  |
-| e2e on critical flows       | CI on PR             | planned                   | deferred until integration gaps proven        |
-| post-edit hook              | local (agent loop)   | planned                   | not justified under cost × signal yet         |
-| visual diff (deterministic) | CI on PR             | excluded                  | see §7                                        |
-| multimodal visual review    | CI on PR             | excluded                  | see §7                                        |
-| pre-prod smoke              | between merge + prod | optional after §3 Phase 3 | north-star manual verification on live Worker |
+| Gate                        | Where                | Required?                  | Catches                                       |
+| --------------------------- | -------------------- | -------------------------- | --------------------------------------------- |
+| lint + typecheck            | local + CI           | required                   | syntactic / type drift                        |
+| unit + integration          | local + CI           | required after §3 Phase 1  | logic regressions, token leakage, auth gates  |
+| e2e on critical flows       | local + CI           | planned (after §3 Phase 5) | loading-state UX visibility (Risk #7)         |
+| post-edit hook              | local (agent loop)   | planned                    | not justified under cost × signal yet         |
+| visual diff (deterministic) | CI on PR             | excluded                   | see §7                                        |
+| multimodal visual review    | CI on PR             | excluded                   | see §7                                        |
+| pre-prod smoke              | between merge + prod | optional after §3 Phase 3  | north-star manual verification on live Worker |
 
 ## 6. Cookbook Patterns
 
@@ -282,17 +283,25 @@ npm run test:rls
 
 **When to skip RLS locally vs CI.**
 
-| Context | Default `npm run test` | `npm run test:rls` |
-| ------- | ---------------------- | ------------------ |
-| No Docker / missing env | RLS file skipped (`skipIf`) | RLS file skipped (`skipIf`) |
-| Local Supabase + credentials complete | RLS runs in parallel full suite | **preferred** — serial single-worker run |
-| CI (Phase 4+) | planned: skip or gate on secrets | planned: optional job with Supabase service |
+| Context                               | Default `npm run test`           | `npm run test:rls`                          |
+| ------------------------------------- | -------------------------------- | ------------------------------------------- |
+| No Docker / missing env               | RLS file skipped (`skipIf`)      | RLS file skipped (`skipIf`)                 |
+| Local Supabase + credentials complete | RLS runs in parallel full suite  | **preferred** — serial single-worker run    |
+| CI (Phase 4+)                         | planned: skip or gate on secrets | planned: optional job with Supabase service |
 
 Never point RLS tests at hosted/production Supabase — `isLocalSupabaseUrl()` enforces localhost only.
 
 ### 6.3 Adding an e2e test
 
-TBD — not scheduled; integration preferred unless research proves SSR cookie gap.
+Scoped to Risk #7 (loading-state visibility). Use `playwright-cli` with a saved auth session (`auth.json`) and a stubbed slow Jira fetch. The test must:
+
+1. Load the auth state from `auth.json` so it starts as a signed-in user with a Jira token.
+2. Stub `fetch` to delay the `/api/jira/*` response by >2s (e.g. via `page.route()`).
+3. Select a board, then select a sprint.
+4. Assert the loading spinner is visible **before** the response resolves.
+5. Allow the (delayed) response to resolve and assert the spinner is gone and the assignee table is present.
+
+Do not use real Jira latency — stub the delay. Do not add e2e tests for auth routes, token handling, or RLS — those are covered cheaper by integration (see §6.2). See §3 Phase 5 for the planned change folder.
 
 ### 6.4 Adding a test for a new API endpoint
 
