@@ -2,8 +2,8 @@
   "package": "@przeprogramowani/10x-cli",
   "version": "1.10.0",
   "manifestVersion": 3,
-  "lastApplied": "2026-07-11T13:57:06.671Z",
-  "lessonId": "m4l3",
+  "lastApplied": "2026-07-12T12:01:33.214Z",
+  "lessonId": "m5l1",
   "course": "10xdevs3",
   "tool": "cursor",
   "files": {
@@ -193,6 +193,18 @@
           "references/e2e-quality-rules.md": "d161cf3659ae5321b7f597987664e4017aecc7e15f5caa7a15a1eaf73bf4162b",
           "references/seed-test-pattern.md": "90fa8778a557d0c88320e839c6a8879735b3390b68ed89b3487258f2562b2f80",
           "SKILL.md": "8aee5b27e33518ef88af52fd3e7c3db3d8bd5363ad7965e973a8045ce9e40254"
+        }
+      },
+      "10x-opportunity-map": {
+        "files": ["SKILL.md"],
+        "contentHashes": {
+          "SKILL.md": "ea554afefdc2ee755c332cf76769c68bb942c597441ec0c422259ef898f2b353"
+        }
+      },
+      "10x-mom-test": {
+        "files": ["SKILL.md"],
+        "contentHashes": {
+          "SKILL.md": "6b50b17ee0906b01a2bd12d858bab3691fa395d425d0bfeea817c1c78c4f2f88"
         }
       }
     },
@@ -1076,6 +1088,19 @@
       "appliedAt": "2026-07-11T13:57:06.671Z",
       "skills": {},
       "prompts": ["m4l3-1-research-with-map.md", "m4l3-2-ast-grep-verification.md"],
+      "configs": []
+    },
+    "m5l1": {
+      "appliedAt": "2026-07-12T12:01:33.212Z",
+      "skills": {
+        "10x-opportunity-map": {
+          "files": ["SKILL.md"]
+        },
+        "10x-mom-test": {
+          "files": ["SKILL.md"]
+        }
+      },
+      "prompts": [],
       "configs": []
     }
   }
