@@ -1,0 +1,26 @@
+{
+  "name": "@code-review/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Code review agent powered by the Cursor SDK",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "tsx --env-file=.env watch src/index.ts",
+    "start": "tsx --env-file=.env src/index.ts",
+    "review": "tsx --env-file=.env src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cursor/sdk": "^1.0.23",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3"
+  }
+}
