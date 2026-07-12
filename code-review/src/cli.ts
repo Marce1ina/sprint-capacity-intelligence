@@ -1,91 +1,61 @@
-import type { ReviewRequest, ReviewScope } from "./types.js";
+import { readFileSync } from "node:fs";
+
+import type { ReviewRequest } from "./types.js";
 
 export interface CliOptions {
-  scope: ReviewScope;
-  baseRef?: string;
-  instructions?: string;
-  customPrompt?: string;
   help: boolean;
 }
 
 export function parseArgs(argv: string[]): CliOptions {
-  const options: CliOptions = {
-    scope: "branch",
-    help: false,
-  };
-
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-
-    switch (arg) {
-      case "--help":
-      case "-h":
-        options.help = true;
-        break;
-      case "--scope":
-        options.scope = parseScope(requireValue(argv, ++i, arg));
-        break;
-      case "--base":
-        options.baseRef = requireValue(argv, ++i, arg);
-        break;
-      case "--instructions":
-        options.instructions = requireValue(argv, ++i, arg);
-        break;
-      case "--prompt":
-        options.customPrompt = requireValue(argv, ++i, arg);
-        options.scope = "natural";
-        break;
-      default:
-        throw new Error(`Unknown argument: ${arg}`);
+  for (const arg of argv) {
+    if (arg === "--help" || arg === "-h") {
+      return { help: true };
     }
+    throw new Error(`Unknown argument: ${arg}`);
   }
 
-  return options;
-}
-
-function parseScope(value: string): ReviewScope {
-  if (value === "branch" || value === "uncommitted" || value === "natural") {
-    return value;
-  }
-
-  throw new Error(`Invalid --scope "${value}". Expected branch | uncommitted | natural.`);
-}
-
-function requireValue(argv: string[], index: number, flag: string): string {
-  const value = argv[index];
-  if (!value || value.startsWith("-")) {
-    throw new Error(`Missing value for ${flag}`);
-  }
-  return value;
+  return { help: false };
 }
 
 export function printHelp(): void {
-  console.log(`Usage: npm run review -- [options]
+  console.log(`Usage: npm run review [-- -h]
 
-Options:
-  --scope <branch|uncommitted|natural>  What to review (default: branch)
-  --base <ref>                          Base git ref for branch reviews (default: main)
-  --instructions <text>                 Extra review instructions
-  --prompt <text>                       Full custom prompt (sets scope to natural)
-  -h, --help                            Show this help
+Reviews a precomputed pull-request diff. Set REVIEW_DIFF or REVIEW_DIFF_FILE.
 
 Environment:
-  CURSOR_API_KEY   Required Cursor API key
-  REVIEW_CWD       Repo root for the local agent (default: parent of code-review/)
-  REVIEW_MODEL     Model id (default: composer-2.5)
+  CURSOR_API_KEY     Required Cursor API key
+  REVIEW_DIFF        Git patch (base...HEAD)
+  REVIEW_DIFF_FILE   Path to a patch file (overrides REVIEW_DIFF)
+  REVIEW_PR_TITLE    Pull request title (optional)
+  REVIEW_PR_BODY     Pull request description (optional)
+  REVIEW_CWD         Repo root for the local agent (default: parent of code-review/)
+  REVIEW_MODEL       Model id (default: composer-2.5)
+  REVIEW_MAX_ROUNDS  Max tool-use rounds before cancelling (default: 5)
 
-Examples:
-  npm run review
-  npm run review -- --scope uncommitted
-  npm run review -- --base origin/main --instructions "Check auth changes only"
+Example:
+  git diff origin/master...HEAD > /tmp/pr.diff
+  REVIEW_DIFF_FILE=/tmp/pr.diff npm run review
 `);
 }
 
-export function toReviewRequest(options: CliOptions): ReviewRequest {
+export function loadReviewRequest(): ReviewRequest {
   return {
-    scope: options.scope,
-    baseRef: options.baseRef ?? "main",
-    instructions: options.instructions,
-    customPrompt: options.customPrompt,
+    diff: loadDiffFromEnv(),
+    prTitle: process.env.REVIEW_PR_TITLE?.trim() ?? undefined,
+    prBody: process.env.REVIEW_PR_BODY?.trim() ?? undefined,
   };
+}
+
+function loadDiffFromEnv(): string {
+  const diffFile = process.env.REVIEW_DIFF_FILE?.trim();
+  if (diffFile) {
+    return readFileSync(diffFile, "utf8");
+  }
+
+  const diff = process.env.REVIEW_DIFF?.trim();
+  if (!diff) {
+    throw new Error("REVIEW_DIFF or REVIEW_DIFF_FILE is required.");
+  }
+
+  return diff;
 }

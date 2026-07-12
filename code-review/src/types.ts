@@ -1,15 +1,10 @@
 import type { ReviewOutput } from "./review-schema.js";
 
-export type ReviewScope = "branch" | "uncommitted" | "natural";
-
 export interface ReviewRequest {
-  scope: ReviewScope;
-  /** Base ref for branch reviews, e.g. `main` or `origin/main`. */
-  baseRef?: string;
-  /** Free-form instructions appended to the review prompt. */
-  instructions?: string;
-  /** When scope is `natural`, the full prompt body. */
-  customPrompt?: string;
+  /** Precomputed patch (base...HEAD). */
+  diff: string;
+  prTitle?: string;
+  prBody?: string;
 }
 
 export interface ReviewAgentConfig {

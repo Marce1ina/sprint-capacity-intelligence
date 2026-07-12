@@ -1,5 +1,5 @@
 import { loadConfig } from "./config.js";
-import { parseArgs, printHelp, toReviewRequest } from "./cli.js";
+import { loadReviewRequest, parseArgs, printHelp } from "./cli.js";
 import { ReviewAgent, ReviewParseError, isStartupError } from "./review-agent.js";
 
 async function main(): Promise<void> {
@@ -12,7 +12,7 @@ async function main(): Promise<void> {
 
   const config = loadConfig();
   const agent = new ReviewAgent(config);
-  const request = toReviewRequest(cli);
+  const request = loadReviewRequest();
 
   try {
     const result = await agent.review(request);

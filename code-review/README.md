@@ -1,6 +1,6 @@
 # @code-review/agent
 
-Local code review agent built on the [Cursor TypeScript SDK](https://cursor.com/docs/sdk/typescript).
+Pull-request code review agent built on the [Cursor TypeScript SDK](https://cursor.com/docs/sdk/typescript). Always reviews a precomputed diff (`base...HEAD`); PR title and description are optional context.
 
 ## Prerequisites
 
@@ -16,54 +16,51 @@ cp .env.example .env
 npm install
 ```
 
-## Usage
-
-Review branch changes against `main`:
+## Local usage
 
 ```bash
+git diff origin/master...HEAD > /tmp/pr.diff
+REVIEW_DIFF_FILE=/tmp/pr.diff npm run review
+```
+
+With PR metadata:
+
+```bash
+REVIEW_DIFF_FILE=/tmp/pr.diff \
+REVIEW_PR_TITLE="Add sprint picker" \
+REVIEW_PR_BODY="Board/sprint dropdowns and assignee table." \
 npm run review
 ```
 
-Review uncommitted edits:
+## GitHub Actions
 
-```bash
-npm run review -- --scope uncommitted
+The composite action checks out the repo, computes `origin/<base>...HEAD`, and runs the agent:
+
+```yaml
+# .github/workflows/review.yml
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./code-review
+        with:
+          api-key: ${{ secrets.CURSOR_API_KEY }}
 ```
 
-Custom instructions:
-
-```bash
-npm run review -- --base origin/main --instructions "Focus on RLS and token handling"
-```
-
-Full custom prompt:
-
-```bash
-npm run review -- --prompt "Review the diff in PR #42 for security issues"
-```
+Optional inputs: `base-ref`, `model`, `max-rounds`.
 
 ## Environment
 
-| Variable            | Description                                                   |
-| ------------------- | ------------------------------------------------------------- |
-| `CURSOR_API_KEY`    | Required API key                                              |
-| `REVIEW_CWD`        | Repo root for the local agent (defaults to the monorepo root) |
-| `REVIEW_MODEL`      | Model id (defaults to `composer-2.5`)                         |
-| `REVIEW_MAX_ROUNDS` | Max tool-use rounds before cancel (defaults to `5`)           |
-
-## Project layout
-
-```
-src/
-  index.ts        CLI entrypoint
-  review-agent.ts Cursor SDK wrapper
-  prompts.ts      Review prompt builder
-  config.ts       Env loading
-  cli.ts          Argument parsing
-  types.ts        Shared types
-```
-
-Extend `src/review-agent.ts` for cloud runs, MCP servers, or resume flows.
+| Variable            | Description                                         |
+| ------------------- | --------------------------------------------------- |
+| `CURSOR_API_KEY`    | Required API key                                    |
+| `REVIEW_DIFF`       | Git patch (required unless `REVIEW_DIFF_FILE` set)  |
+| `REVIEW_DIFF_FILE`  | Path to a patch file (overrides `REVIEW_DIFF`)      |
+| `REVIEW_PR_TITLE`   | Pull request title (optional)                       |
+| `REVIEW_PR_BODY`    | Pull request description (optional)                 |
+| `REVIEW_CWD`        | Repo root for the agent (defaults to monorepo root) |
+| `REVIEW_MODEL`      | Model id (defaults to `composer-2.5`)               |
+| `REVIEW_MAX_ROUNDS` | Max tool-use rounds before cancel (defaults to `5`) |
 
 ## Output
 

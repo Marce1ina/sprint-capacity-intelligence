@@ -1,0 +1,16 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./code-review
+        with:
+          api-key: ${{ secrets.CURSOR_API_KEY }}
+          model: ${{ vars.REVIEW_MODEL }}
+          max-rounds: ${{ vars.REVIEW_MAX_ROUNDS }}

@@ -1,0 +1,88 @@
+name: AI Reviewer
+description: Run the team's code review agent against the current branch vs base
+
+branding:
+  icon: terminal
+  color: purple
+
+inputs:
+  api-key:
+    description: Cursor API key
+    required: true
+  base-ref:
+    description: Base branch for the diff (defaults to the PR base or master)
+    required: false
+    default: ""
+  model:
+    description: Model id for the review agent
+    required: false
+    default: ""
+  max-rounds:
+    description: Max tool-use rounds before cancelling
+    required: false
+    default: ""
+
+outputs:
+  verdict:
+    description: Pass/fail verdict from the agent
+    value: ${{ steps.agent.outputs.verdict }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Prepare PR diff
+      id: prepare
+      shell: bash
+      run: |
+        set -euo pipefail
+        base_ref="${{ inputs.base-ref }}"
+        if [[ -z "$base_ref" ]]; then
+          base_ref="${{ github.base_ref }}"
+        fi
+        if [[ -z "$base_ref" ]]; then
+          base_ref="master"
+        fi
+        diff_file="${RUNNER_TEMP}/pr.diff"
+        git diff "origin/${base_ref}...HEAD" > "$diff_file"
+        echo "diff_file=$diff_file" >> "$GITHUB_OUTPUT"
+
+    - name: Configure Node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ${{ github.workspace }}/.nvmrc
+        cache: npm
+        cache-dependency-path: ${{ github.action_path }}/package-lock.json
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci
+
+    - name: Build agent
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm run build
+
+    - name: Run agent
+      id: agent
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        result_file="$(mktemp)"
+        node dist/index.js > "$result_file"
+        verdict="$(jq -r '.verdict' "$result_file")"
+        echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+      env:
+        CURSOR_API_KEY: ${{ inputs.api-key }}
+        REVIEW_CWD: ${{ github.workspace }}
+        REVIEW_MODEL: ${{ inputs.model }}
+        REVIEW_MAX_ROUNDS: ${{ inputs.max-rounds }}
+        REVIEW_DIFF_FILE: ${{ steps.prepare.outputs.diff_file }}
+        REVIEW_PR_TITLE: ${{ github.event.pull_request.title }}
+        REVIEW_PR_BODY: ${{ github.event.pull_request.body }}

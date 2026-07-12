@@ -2,36 +2,30 @@ import { SYSTEM_PROMPT, buildOutputInstructions } from "./review-schema.js";
 import type { ReviewRequest } from "./types.js";
 
 export function buildReviewPrompt(request: ReviewRequest): string {
-  const sections = [SYSTEM_PROMPT, ""];
-
-  if (request.scope === "natural" && request.customPrompt) {
-    sections.push(request.customPrompt, "");
-  } else {
-    sections.push(scopeInstructions(request), "");
-
-    if (request.instructions?.trim()) {
-      sections.push("Additional instructions:", request.instructions.trim(), "");
-    }
-  }
-
-  sections.push(buildOutputInstructions());
+  const sections = [SYSTEM_PROMPT, "", buildDiffInstructions(request), "", buildOutputInstructions()];
   return sections.join("\n");
 }
 
-function scopeInstructions(request: ReviewRequest): string {
-  switch (request.scope) {
-    case "branch":
-      return [
-        "Review the diff for the current branch against the base branch.",
-        `Base ref: ${request.baseRef ?? "main"}`,
-        "Use git to inspect changes; do not assume unstaged edits unless relevant.",
-      ].join("\n");
-    case "uncommitted":
-      return [
-        "Review uncommitted changes in the working tree.",
-        "Include staged and unstaged edits; mention if the tree is clean.",
-      ].join("\n");
-    case "natural":
-      return "Review the codebase changes described above.";
+function buildDiffInstructions(request: ReviewRequest): string {
+  const sections = ["Review the following pull request diff."];
+
+  if (request.prTitle?.trim()) {
+    sections.push(`PR title: ${request.prTitle.trim()}`);
   }
+
+  if (request.prBody?.trim()) {
+    sections.push("PR description:", request.prBody.trim());
+  }
+
+  sections.push(
+    "",
+    "Diff (current branch vs base):",
+    "```diff",
+    request.diff.trim() || "(empty diff — treat as no code changes)",
+    "```",
+    "",
+    "Use the repository on disk for additional context when needed; do not re-run git diff.",
+  );
+
+  return sections.join("\n");
 }
