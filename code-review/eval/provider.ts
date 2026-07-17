@@ -65,17 +65,16 @@ export default class ReviewAgentProvider implements ApiProvider {
       return { error: error instanceof Error ? error.message : String(error) };
     }
 
-    const maxRounds = resolveMaxRounds(this.config.maxRounds);
-    const agentConfig: ReviewAgentConfig = {
-      apiKey,
-      cwd: path.resolve(process.env.REVIEW_CWD ?? MONOREPO_ROOT),
-      modelId,
-      maxRounds,
-    };
-
-    const agent = new ReviewAgent(agentConfig);
-
     try {
+      const maxRounds = resolveMaxRounds(this.config.maxRounds);
+      const agentConfig: ReviewAgentConfig = {
+        apiKey,
+        cwd: path.resolve(process.env.REVIEW_CWD ?? MONOREPO_ROOT),
+        modelId,
+        maxRounds,
+      };
+
+      const agent = new ReviewAgent(agentConfig);
       const result = await agent.review({
         diff: fixture.diff,
         prTitle: fixture.prTitle,

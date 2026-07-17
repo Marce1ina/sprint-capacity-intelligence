@@ -99,3 +99,4 @@ GitHub Actions:
 
 - `.github/workflows/ci.yml` — lint + build on every push and PR to `master`. Requires `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as repository secrets.
 - `.github/workflows/review.yml` — advisory AI code review on PRs to `master` (Cursor). Requires `CURSOR_API_KEY` on the **PRD** GitHub Environment; posts a PR comment and toggles `ai-cr-passed` / `ai-cr-failed`. Green check ≠ pass label. See `code-review/README.md`.
+- `.github/workflows/cr-eval.yml` — blocking Promptfoo model matrix when prompt/criteria/eval harness paths change (≈12 Cursor agent runs). Same PRD `CURSOR_API_KEY`; fails the check on assertion failure. Fork PRs skip. See `code-review/README.md`.

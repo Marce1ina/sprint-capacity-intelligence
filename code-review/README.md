@@ -8,7 +8,7 @@ Reviews load hard rules from [`criteria.md`](./criteria.md) into every prompt (l
 
 ## Prerequisites
 
-- Node.js **22.13+** (see repo `.nvmrc`)
+- Node.js version matching the repo `.nvmrc` (Promptfoo eval needs `>=22.22`)
 - A Cursor API key from [Dashboard → Integrations](https://cursor.com/dashboard/integrations)
 
 ## Setup
