@@ -292,9 +292,9 @@ Add a dedicated workflow that runs the eval suite when prompt/criteria (or eval 
 
 #### Automated
 
-- [x] 3.1 Workflow file present with path filters covering prompt/criteria + eval paths
-- [x] 3.2 Documented verification that a criteria-only PR would match path filters
-- [x] 3.3 Artifact upload configured for eval results
+- [x] 3.1 Workflow file present with path filters covering prompt/criteria + eval paths — 3bcf223
+- [x] 3.2 Documented verification that a criteria-only PR would match path filters — 3bcf223
+- [x] 3.3 Artifact upload configured for eval results — 3bcf223
 
 #### Manual
 
