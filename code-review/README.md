@@ -2,6 +2,10 @@
 
 Pull-request code review agent built on the [Cursor TypeScript SDK](https://cursor.com/docs/sdk/typescript). Always reviews a precomputed diff (`base...HEAD`); PR title and description are optional context.
 
+## Project criteria
+
+Reviews load hard rules from [`criteria.md`](./criteria.md) into every prompt (local and CI). Edit that file to change what the agent treats as binding project policy. A missing or empty file fails the run — there is no silent fallback to generic-only scoring.
+
 ## Prerequisites
 
 - Node.js **22.13+** (see repo `.nvmrc`)

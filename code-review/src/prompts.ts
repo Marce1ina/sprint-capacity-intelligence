@@ -1,8 +1,19 @@
+import { loadProjectCriteria } from "./load-criteria.js";
 import { SYSTEM_PROMPT, buildOutputInstructions } from "./review-schema.js";
 import type { ReviewRequest } from "./types.js";
 
 export function buildReviewPrompt(request: ReviewRequest): string {
-  const sections = [SYSTEM_PROMPT, "", buildDiffInstructions(request), "", buildOutputInstructions()];
+  const criteria = loadProjectCriteria();
+  const sections = [
+    SYSTEM_PROMPT,
+    "",
+    "Project-specific review criteria (hard rules — apply when scoring and choosing verdict):",
+    criteria,
+    "",
+    buildDiffInstructions(request),
+    "",
+    buildOutputInstructions(),
+  ];
   return sections.join("\n");
 }
 
