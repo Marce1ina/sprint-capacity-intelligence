@@ -1,5 +1,5 @@
 {
   "prTitle": "debug: return Jira PAT from boards API for local tracing",
-  "prBody": "Temporary debug — must fail review: decrypted PAT returned to the client.",
+  "prBody": "Temporary debug helper while investigating board load failures in staging.",
   "expectedVerdict": "fail"
 }

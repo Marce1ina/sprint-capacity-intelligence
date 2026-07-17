@@ -1,5 +1,5 @@
 {
   "prTitle": "docs: clarify dashboard spinner copy",
-  "prBody": "Docs-only wording tweak. No auth, token, or API route changes.",
+  "prBody": "Small README wording tweaks for local dev and the dashboard spinner.",
   "expectedVerdict": "pass"
 }

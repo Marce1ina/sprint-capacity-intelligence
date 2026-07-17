@@ -1,5 +1,5 @@
 {
   "prTitle": "feat: expose admin Supabase client on locals for dashboard queries",
-  "prBody": "Attaches createAdminClient to context.locals — must fail review (service-role misuse).",
+  "prBody": "Attach an admin client on locals so dashboard pages can run privileged reads without per-route setup.",
   "expectedVerdict": "fail"
 }

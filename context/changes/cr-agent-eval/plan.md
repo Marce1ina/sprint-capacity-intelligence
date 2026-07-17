@@ -266,14 +266,14 @@ Add a dedicated workflow that runs the eval suite when prompt/criteria (or eval 
 
 #### Automated
 
-- [x] 1.1 `code-review` typecheck passes: `npm run typecheck` (cwd `code-review`)
-- [x] 1.2 Fixture files exist for at least three cases with `expectedVerdict` set
-- [x] 1.3 Smoke can run `ReviewAgent` on one fixture and print `latencyMs` without changing advisory CI stdout contract
+- [x] 1.1 `code-review` typecheck passes: `npm run typecheck` (cwd `code-review`) — f457815
+- [x] 1.2 Fixture files exist for at least three cases with `expectedVerdict` set — f457815
+- [x] 1.3 Smoke can run `ReviewAgent` on one fixture and print `latencyMs` without changing advisory CI stdout contract — f457815
 
 #### Manual
 
-- [x] 1.4 Confirm synthetic fail fixtures are obviously wrong against `criteria.md` (human read)
-- [x] 1.5 Confirm benign pass fixture would not trip hard rules
+- [x] 1.4 Confirm synthetic fail fixtures are obviously wrong against `criteria.md` (human read) — f457815
+- [x] 1.5 Confirm benign pass fixture would not trip hard rules — f457815
 
 ### Phase 2: Promptfoo Harness and Local Matrix
 
