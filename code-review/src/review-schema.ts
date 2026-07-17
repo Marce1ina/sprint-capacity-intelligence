@@ -80,8 +80,16 @@ export function parseReviewResponse(text: string): ReviewOutput {
 }
 
 function extractJson(text: string): string {
-  const fenced = /```(?:json)?\s*([\s\S]*?)```/.exec(text);
-  if (fenced?.[1]) return fenced[1].trim();
+  // Prefer labeled ```json fences so prose/code samples earlier in the reply
+  // (e.g. quoted test snippets) do not steal the first unlabeled fence match.
+  const jsonFenced = /```json\s*([\s\S]*?)```/i.exec(text);
+  if (jsonFenced?.[1]) return jsonFenced[1].trim();
+
+  const fenced = /```\s*([\s\S]*?)```/.exec(text);
+  if (fenced?.[1]) {
+    const candidate = fenced[1].trim();
+    if (candidate.startsWith("{")) return candidate;
+  }
 
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");

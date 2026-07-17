@@ -1,0 +1,5 @@
+{
+  "baseline": "composer-2.5",
+  "models": ["composer-2.5", "claude-sonnet-5", "claude-haiku-4-5"],
+  "notes": "Baseline is always composer-2.5. Rivals chosen from Cursor.models.list() for this team plan: Sonnet 5 (stronger) and Haiku 4.5 (cheaper)."
+}

@@ -12,6 +12,8 @@
     "start": "tsx --env-file=.env src/index.ts",
     "review": "tsx --env-file=.env src/index.ts",
     "smoke:eval": "tsx --env-file=.env eval/smoke.ts",
+    "eval": "promptfoo eval -c eval/promptfooconfig.mjs",
+    "eval:assert-check": "tsx eval/assert-check.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.build.json"
   },
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.19.0",
+    "promptfoo": "^0.121.19",
     "tsx": "^4.22.4",
     "typescript": "^5.9.3"
   }

@@ -93,6 +93,48 @@ On success, validated JSON is written to **stdout** (schema in `src/review-schem
 
 Agent streaming logs go to stderr. Exit code `3` means the response failed Zod validation.
 
+## Model eval suite (Promptfoo)
+
+Compare review models on committed golden diffs under `eval/fixtures/`. Uses the same `ReviewAgent` path as production (not a prompt-only shortcut).
+
+### Models
+
+Ids live in [`eval/models.json`](./eval/models.json) (source of truth for local + future CI):
+
+| Role           | Model id           |
+| -------------- | ------------------ |
+| Baseline       | `composer-2.5`     |
+| Stronger rival | `claude-sonnet-5`  |
+| Cheaper rival  | `claude-haiku-4-5` |
+
+### Cost warning
+
+A full matrix is **3 models × 4 fixtures ≈ 12 Cursor agent runs**, billed on your Cursor plan. Do not run casually. Advisory PR review (`review.yml`) does **not** run this matrix.
+
+### Local commands
+
+```bash
+cd code-review
+# Dry check: deliberate verdict mismatch fails (no API)
+npm run eval:assert-check
+
+# Full matrix (requires CURSOR_API_KEY in .env)
+npm run eval
+```
+
+Results write to `eval/results/latest.json` (gitignored). Promptfoo is a **devDependency** only — normal `npm run review` / CI advisory path does not need it.
+
+### Fixtures
+
+| Id                  | Expected verdict |
+| ------------------- | ---------------- |
+| `pass-benign`       | `pass`           |
+| `fail-secret-leak`  | `fail`           |
+| `fail-auth-gate`    | `fail`           |
+| `fail-service-role` | `fail`           |
+
+Assertions: schema-shaped JSON (`verdict`, `status`, `latencyMs`) + `verdict === expectedVerdict`. Latency/usage are reported as metrics; MVP does not fail on latency thresholds.
+
 ## Production readiness (hosted CI)
 
 Before expecting AI review on PRs:
