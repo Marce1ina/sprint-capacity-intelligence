@@ -92,3 +92,14 @@ On success, validated JSON is written to **stdout** (schema in `src/review-schem
 ```
 
 Agent streaming logs go to stderr. Exit code `3` means the response failed Zod validation.
+
+## Production readiness (hosted CI)
+
+Before expecting AI review on PRs:
+
+1. Set repo secret `CURSOR_API_KEY` (required; workflow fails without it).
+2. Optional repo variables: `REVIEW_MODEL`, `REVIEW_MAX_ROUNDS`.
+3. Labels `ai-cr-passed` and `ai-cr-failed` — created automatically on first successful run, or create them manually if the token cannot create labels.
+4. The check is **advisory**: a green workflow does **not** mean `verdict=pass`. Look at the PR comment and `ai-cr-*` label.
+5. Cursor API is billed per agent run; concurrency cancels in-progress runs for the same PR.
+6. Fork PRs skip the agent and side effects in v1 (default `GITHUB_TOKEN` often cannot write labels/comments on forks).

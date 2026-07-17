@@ -293,9 +293,9 @@ Update `AGENTS.md` / `CLAUDE.md` CI blurb to mention `review.yml` alongside `ci.
 
 #### Automated
 
-- [x] 2.1 `action.yml` declares `verdict`, `summary`, and `result-file` outputs
-- [x] 2.2 Prepare-diff step fetches base before diffing
-- [x] 2.3 `cd code-review && npm run build` still succeeds
+- [x] 2.1 `action.yml` declares `verdict`, `summary`, and `result-file` outputs — 05e4ce0
+- [x] 2.2 Prepare-diff step fetches base before diffing — 05e4ce0
+- [x] 2.3 `cd code-review && npm run build` still succeeds — 05e4ce0
 
 #### Manual
 
@@ -305,9 +305,9 @@ Update `AGENTS.md` / `CLAUDE.md` CI blurb to mention `review.yml` alongside `ci.
 
 #### Automated
 
-- [ ] 3.1 `review.yml` includes permissions, concurrency, comment, labels, and fork guard
-- [ ] 3.2 Workflow does not fail solely on `verdict=fail`
-- [ ] 3.3 Docs mention `CURSOR_API_KEY` and `ai-cr-*` labels
+- [x] 3.1 `review.yml` includes permissions, concurrency, comment, labels, and fork guard
+- [x] 3.2 Workflow does not fail solely on `verdict=fail`
+- [x] 3.3 Docs mention `CURSOR_API_KEY` and `ai-cr-*` labels
 
 #### Manual
 

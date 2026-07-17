@@ -5,12 +5,128 @@ on:
     branches: [master]
   workflow_dispatch:
 
+concurrency:
+  group: ai-cr-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   review:
     runs-on: ubuntu-latest
+    # Fork PRs: skip paid agent run and GitHub side effects (token often cannot write).
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
     steps:
-      - uses: ./code-review
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run AI review
+        id: ai-review
+        uses: ./code-review
         with:
           api-key: ${{ secrets.CURSOR_API_KEY }}
           model: ${{ vars.REVIEW_MODEL }}
           max-rounds: ${{ vars.REVIEW_MAX_ROUNDS }}
+
+      - name: Upload review result
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-review-result
+          path: ${{ steps.ai-review.outputs.result-file }}
+          retention-days: 14
+
+      - name: Comment and label
+        if: github.event.pull_request.number
+        uses: actions/github-script@v7
+        env:
+          RESULT_FILE: ${{ steps.ai-review.outputs.result-file }}
+        with:
+          script: |
+            const fs = require('fs');
+            const result = JSON.parse(fs.readFileSync(process.env.RESULT_FILE, 'utf8'));
+            const { verdict, summary } = result;
+
+            const scores = [
+              ['Implementation correctness', result.implementationCorrectness],
+              ['Idiomaticity', result.idiomaticity],
+              ['Complexity', result.complexity],
+              ['Test / risk coverage', result.testRiskCoverage],
+              ['Security / safety', result.securitySafety],
+            ];
+            const table = [
+              '| Dimension | Score |',
+              '| --- | ---: |',
+              ...scores.map(([name, score]) => `| ${name} | ${score} |`),
+            ].join('\n');
+
+            const body = [
+              '## AI Code Review',
+              '',
+              `**Verdict:** \`${verdict}\``,
+              '',
+              table,
+              '',
+              summary || '',
+            ].join('\n');
+
+            const issue_number = context.issue.number;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              body,
+            });
+
+            const passLabel = 'ai-cr-passed';
+            const failLabel = 'ai-cr-failed';
+            const addLabel = verdict === 'pass' ? passLabel : failLabel;
+            const removeLabel = verdict === 'pass' ? failLabel : passLabel;
+
+            for (const name of [passLabel, failLabel]) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name,
+                });
+              } catch (error) {
+                if (error.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name,
+                    color: name === passLabel ? '0E8A16' : 'D93F0B',
+                    description:
+                      name === passLabel
+                        ? 'AI code review verdict: pass'
+                        : 'AI code review verdict: fail',
+                  });
+                } else {
+                  throw error;
+                }
+              }
+            }
+
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                name: removeLabel,
+              });
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              labels: [addLabel],
+            });
