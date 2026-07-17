@@ -22,3 +22,5 @@ Hard rules for this repository. Apply these when scoring and choosing `verdict`.
 
 - Astro for static content and layout; React only for interactivity (islands with `client:load`).
 - No Next.js directives such as `"use client"`.
+
+<!-- cr-eval path-filter smoke: criteria-only PR trigger -->
