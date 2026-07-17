@@ -137,11 +137,35 @@ Assertions: schema-shaped JSON (`verdict`, `status`, `latencyMs`) + `verdict ===
 
 ## Production readiness (hosted CI)
 
+### Advisory PR review (`review.yml`)
+
 Before expecting AI review on PRs:
 
 1. Set `CURSOR_API_KEY` on the **PRD** GitHub Environment (the workflow job uses `environment: PRD`). A repo-level secret alone is not enough unless you remove that `environment` key.
 2. Optional repo variables: `REVIEW_MODEL`, `REVIEW_MAX_ROUNDS`.
 3. Labels `ai-cr-passed` and `ai-cr-failed` — created automatically on first successful run, or create them manually if the token cannot create labels.
-4. The check is **advisory**: a green workflow does **not** mean `verdict=pass`. Look at the PR comment and `ai-cr-*` label.
+4. The check is **advisory**: a green workflow does **not** mean `verdict=pass`. Look at the PR comment and `ai-cr-*` label. `verdict=fail` does **not** fail `review.yml`.
 5. Cursor API is billed per agent run; concurrency cancels in-progress runs for the same PR.
 6. Fork PRs skip the agent and side effects in v1 (default `GITHUB_TOKEN` often cannot write labels/comments on forks).
+
+### Blocking eval gate (`cr-eval.yml`)
+
+Path-filtered workflow [`.github/workflows/cr-eval.yml`](../.github/workflows/cr-eval.yml) runs `npm run eval` and **fails the check** when assertions fail. It is separate from advisory `review.yml` and from lint/build `ci.yml`.
+
+**Enable checklist:**
+
+1. Same **PRD** `CURSOR_API_KEY` as advisory review (no new secret name).
+2. Path filters cover at least: `code-review/criteria.md`, `code-review/src/prompts.ts`, `code-review/src/review-schema.ts`, `code-review/src/load-criteria.ts`, `code-review/src/review-agent.ts`, `code-review/eval/**`, and the workflow file itself.
+3. Expect **~12 Cursor agent runs** per triggering PR (3 models × 4 fixtures). Concurrency cancels stacked runs for the same PR.
+4. Re-run anytime via **Actions → CR Agent Eval → Run workflow** (`workflow_dispatch`).
+5. Fork PRs skip the paid matrix (same `full_name` guard as `review.yml`).
+6. Results artifact: `cr-eval-results` (Promptfoo output under `code-review/eval/results/`).
+
+**Path-filter verification (criteria-only PR):** A PR that only changes `code-review/criteria.md` matches the `paths` list above, so GitHub schedules the job. Confirm with:
+
+```bash
+# From a branch that only edits criteria.md, open a PR to master — or:
+gh workflow run "CR Agent Eval" --ref "$(git branch --show-current)"
+```
+
+Advisory `review.yml` remains non-blocking on `verdict=fail`; only this eval gate blocks on wrong expected verdicts / parse / agent errors.

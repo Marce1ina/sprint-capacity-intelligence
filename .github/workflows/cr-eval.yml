@@ -1,0 +1,57 @@
+name: CR Agent Eval
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "code-review/criteria.md"
+      - "code-review/src/prompts.ts"
+      - "code-review/src/review-schema.ts"
+      - "code-review/src/load-criteria.ts"
+      - "code-review/src/review-agent.ts"
+      - "code-review/eval/**"
+      - ".github/workflows/cr-eval.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: cr-eval-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    environment: PRD
+    # Fork PRs: skip paid Cursor agent matrix (same guard as review.yml).
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: code-review/package-lock.json
+
+      - name: Install dependencies
+        working-directory: code-review
+        run: npm ci
+
+      - name: Run Promptfoo eval matrix
+        working-directory: code-review
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: npm run eval
+
+      - name: Upload eval results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cr-eval-results
+          path: code-review/eval/results/
+          retention-days: 14
+          if-no-files-found: warn

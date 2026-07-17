@@ -279,22 +279,22 @@ Add a dedicated workflow that runs the eval suite when prompt/criteria (or eval 
 
 #### Automated
 
-- [x] 2.1 `npm run eval` exits non-zero on deliberate expected-verdict mismatch (or equivalent assertion check)
-- [x] 2.2 With `CURSOR_API_KEY` set, full matrix run completes for 3 models × fixtures
-- [x] 2.3 `npm run typecheck` still passes
+- [x] 2.1 `npm run eval` exits non-zero on deliberate expected-verdict mismatch (or equivalent assertion check) — a8776d6
+- [x] 2.2 With `CURSOR_API_KEY` set, full matrix run completes for 3 models × fixtures — a8776d6
+- [x] 2.3 `npm run typecheck` still passes — a8776d6
 
 #### Manual
 
-- [x] 2.4 Inspect matrix: pass/fail per model/fixture plus latency (and usage if present)
-- [x] 2.5 Confirm rivals are models actually available on the team Cursor plan
+- [x] 2.4 Inspect matrix: pass/fail per model/fixture plus latency (and usage if present) — a8776d6
+- [x] 2.5 Confirm rivals are models actually available on the team Cursor plan — a8776d6
 
 ### Phase 3: Blocking Path-Filtered CI Gate
 
 #### Automated
 
-- [ ] 3.1 Workflow file present with path filters covering prompt/criteria + eval paths
-- [ ] 3.2 Documented verification that a criteria-only PR would match path filters
-- [ ] 3.3 Artifact upload configured for eval results
+- [x] 3.1 Workflow file present with path filters covering prompt/criteria + eval paths
+- [x] 3.2 Documented verification that a criteria-only PR would match path filters
+- [x] 3.3 Artifact upload configured for eval results
 
 #### Manual
 
