@@ -298,6 +298,6 @@ Add a dedicated workflow that runs the eval suite when prompt/criteria (or eval 
 
 #### Manual
 
-- [x] 3.4 `workflow_dispatch` or same-repo PR on a gated path runs successfully with PRD secret
-- [x] 3.5 Deliberately broken assertion fails the check, then is reverted
-- [x] 3.6 Fork PRs do not consume API budget
+- [x] 3.4 `workflow_dispatch` or same-repo PR on a gated path runs successfully with PRD secret — a7c4262
+- [x] 3.5 Deliberately broken assertion fails the check, then is reverted — a7c4262
+- [x] 3.6 Fork PRs do not consume API budget — a7c4262
