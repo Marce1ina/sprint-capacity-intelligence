@@ -299,19 +299,19 @@ Update `AGENTS.md` / `CLAUDE.md` CI blurb to mention `review.yml` alongside `ci.
 
 #### Manual
 
-- [ ] 2.4 Confirm non-empty `summary` output / readable result file on a test run
+- [x] 2.4 Confirm non-empty `summary` output / readable result file on a test run
 
 ### Phase 3: Workflow Glue + Docs
 
 #### Automated
 
-- [x] 3.1 `review.yml` includes permissions, concurrency, comment, labels, and fork guard
-- [x] 3.2 Workflow does not fail solely on `verdict=fail`
-- [x] 3.3 Docs mention `CURSOR_API_KEY` and `ai-cr-*` labels
+- [x] 3.1 `review.yml` includes permissions, concurrency, comment, labels, and fork guard — d6710e7
+- [x] 3.2 Workflow does not fail solely on `verdict=fail` — d6710e7
+- [x] 3.3 Docs mention `CURSOR_API_KEY` and `ai-cr-*` labels — d6710e7
 
 #### Manual
 
-- [ ] 3.4 Same-repo PR smoke: artifact, new comment, correct label
-- [ ] 3.5 Second push: concurrency cancel + additional comment
-- [ ] 3.6 `verdict=fail` stays advisory (green job) with `ai-cr-failed`
-- [ ] 3.7 Fork skip policy verified (if testable)
+- [x] 3.4 Same-repo PR smoke: artifact, new comment, correct label
+- [x] 3.5 Second push: concurrency cancel + additional comment
+- [x] 3.6 `verdict=fail` stays advisory (green job) with `ai-cr-failed`
+- [x] 3.7 Fork skip policy verified (if testable)

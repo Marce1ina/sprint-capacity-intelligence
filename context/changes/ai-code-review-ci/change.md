@@ -1,7 +1,7 @@
 ---
 change_id: ai-code-review-ci
 title: Wire AI code-review agent into CI for PRs to master
-status: implementing
+status: implemented
 created: 2026-07-17
 updated: 2026-07-17
 archived_at: null
