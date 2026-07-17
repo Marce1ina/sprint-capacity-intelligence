@@ -12,3 +12,5 @@ export function aiCrSmokePing(): string {
   console.log("smoke pat", SMOKE_FAKE_PAT);
   return "ai-cr-smoke-ok";
 }
+
+// concurrency probe 1 17:31:28
