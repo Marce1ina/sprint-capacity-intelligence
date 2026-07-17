@@ -76,6 +76,14 @@ const scriptsConfig = tseslint.config({
   },
 });
 
+// CLI package: stderr/stdout logging is intentional; deps live in code-review/node_modules.
+const codeReviewConfig = tseslint.config({
+  files: ["code-review/**/*.{js,ts}"],
+  rules: {
+    "no-console": "off",
+  },
+});
+
 export default tseslint.config(
   { ignores: [".cursor/**", ".claude/**"] },
   includeIgnoreFile(gitignorePath),
@@ -85,5 +93,6 @@ export default tseslint.config(
   ...eslintPluginAstro.configs["flat/jsx-a11y-recommended"],
   astroConfig,
   scriptsConfig,
+  codeReviewConfig,
   eslintPluginPrettier,
 );

@@ -68,4 +68,4 @@ All return JSON; require `context.locals.user` and stored Jira PAT via `Integrat
 GitHub Actions:
 
 - `.github/workflows/ci.yml` — lint + build on every push and PR to master. Requires `SUPABASE_URL` and `SUPABASE_KEY` repository secrets for the build step.
-- `.github/workflows/review.yml` — advisory AI code review on PRs to master (Cursor agent). Requires `CURSOR_API_KEY`; applies `ai-cr-passed` / `ai-cr-failed` labels and a PR comment. Does not fail the check on `verdict=fail`. See `code-review/README.md`.
+- `.github/workflows/review.yml` — advisory AI code review on PRs to master (Cursor agent). Requires `CURSOR_API_KEY` on the **PRD** GitHub Environment; applies `ai-cr-passed` / `ai-cr-failed` labels and a PR comment. Does not fail the check on `verdict=fail`. See `code-review/README.md`.
