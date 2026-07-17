@@ -63,7 +63,7 @@ runs:
       with:
         node-version-file: .nvmrc
         cache: npm
-        cache-dependency-path: ${{ github.action_path }}/package-lock.json
+        cache-dependency-path: code-review/package-lock.json
 
     - name: Install dependencies
       shell: bash
