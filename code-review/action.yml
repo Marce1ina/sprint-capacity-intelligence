@@ -26,6 +26,12 @@ outputs:
   verdict:
     description: Pass/fail verdict from the agent
     value: ${{ steps.agent.outputs.verdict }}
+  summary:
+    description: Markdown summary from the agent
+    value: ${{ steps.agent.outputs.summary }}
+  result-file:
+    description: Path to the full review JSON file
+    value: ${{ steps.agent.outputs.result-file }}
 
 runs:
   using: composite
@@ -47,6 +53,7 @@ runs:
         if [[ -z "$base_ref" ]]; then
           base_ref="master"
         fi
+        git fetch origin "$base_ref"
         diff_file="${RUNNER_TEMP}/pr.diff"
         git diff "origin/${base_ref}...HEAD" > "$diff_file"
         echo "diff_file=$diff_file" >> "$GITHUB_OUTPUT"
@@ -74,10 +81,17 @@ runs:
       working-directory: ${{ github.action_path }}
       run: |
         set -euo pipefail
-        result_file="$(mktemp)"
+        result_file="${RUNNER_TEMP}/review-result.json"
         node dist/index.js > "$result_file"
         verdict="$(jq -r '.verdict' "$result_file")"
+        summary="$(jq -r '.summary' "$result_file")"
         echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+        echo "result-file=$result_file" >> "$GITHUB_OUTPUT"
+        {
+          echo "summary<<EOF"
+          echo "$summary"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
       env:
         CURSOR_API_KEY: ${{ inputs.api-key }}
         REVIEW_CWD: ${{ github.workspace }}

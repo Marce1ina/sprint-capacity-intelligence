@@ -38,7 +38,7 @@ npm run review
 
 ## GitHub Actions
 
-The composite action checks out the repo, computes `origin/<base>...HEAD`, and runs the agent:
+The composite action checks out the repo, fetches the base ref, computes `origin/<base>...HEAD`, and runs the agent:
 
 ```yaml
 # .github/workflows/review.yml
@@ -47,11 +47,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: ./code-review
+        id: ai-review
         with:
           api-key: ${{ secrets.CURSOR_API_KEY }}
 ```
 
 Optional inputs: `base-ref`, `model`, `max-rounds`.
+
+### Action outputs
+
+| Output        | Description                                       |
+| ------------- | ------------------------------------------------- |
+| `verdict`     | `pass` or `fail` from the agent                   |
+| `summary`     | Markdown summary (suitable for a PR comment)      |
+| `result-file` | Path to the full review JSON under `$RUNNER_TEMP` |
 
 ## Environment
 

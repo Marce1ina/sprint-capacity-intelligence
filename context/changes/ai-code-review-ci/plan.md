@@ -281,21 +281,21 @@ Update `AGENTS.md` / `CLAUDE.md` CI blurb to mention `review.yml` alongside `ci.
 
 #### Automated
 
-- [x] 1.1 `criteria.md` exists under `code-review/` and covers the hard-rule themes
-- [x] 1.2 `cd code-review && npm run typecheck` passes after prompt changes
-- [x] 1.3 `cd code-review && npm run build` succeeds
+- [x] 1.1 `criteria.md` exists under `code-review/` and covers the hard-rule themes — fa070ce
+- [x] 1.2 `cd code-review && npm run typecheck` passes after prompt changes — fa070ce
+- [x] 1.3 `cd code-review && npm run build` succeeds — fa070ce
 
 #### Manual
 
-- [x] 1.4 Local dry-run or inspection confirms criteria are included in the prompt path
+- [x] 1.4 Local dry-run or inspection confirms criteria are included in the prompt path — fa070ce
 
 ### Phase 2: Action Outputs + Diff Fidelity
 
 #### Automated
 
-- [ ] 2.1 `action.yml` declares `verdict`, `summary`, and `result-file` outputs
-- [ ] 2.2 Prepare-diff step fetches base before diffing
-- [ ] 2.3 `cd code-review && npm run build` still succeeds
+- [x] 2.1 `action.yml` declares `verdict`, `summary`, and `result-file` outputs
+- [x] 2.2 Prepare-diff step fetches base before diffing
+- [x] 2.3 `cd code-review && npm run build` still succeeds
 
 #### Manual
 
