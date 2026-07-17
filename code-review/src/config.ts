@@ -22,9 +22,14 @@ export function loadConfig(): ReviewAgentConfig {
   return {
     apiKey,
     cwd,
-    modelId: process.env.REVIEW_MODEL?.trim() ?? "composer-2.5",
+    modelId: resolveModelId(process.env.REVIEW_MODEL),
     maxRounds,
   };
+}
+
+function resolveModelId(value: string | undefined): string {
+  if (!value?.trim()) return "composer-2.5";
+  return value.trim();
 }
 
 function parseMaxRounds(value: string | undefined): number {
