@@ -1,3 +1,5 @@
+import type { TokenUsage } from "@cursor/sdk";
+
 import type { ReviewOutput } from "./review-schema.js";
 
 export interface ReviewRequest {
@@ -21,4 +23,8 @@ export interface ReviewResult {
   status: "finished" | "error" | "cancelled";
   text: string;
   review: ReviewOutput;
+  /** Wall-clock ms from agent create through run wait. */
+  latencyMs: number;
+  /** Cumulative token usage from `runRef.wait()` when the SDK reports it. */
+  usage?: TokenUsage;
 }

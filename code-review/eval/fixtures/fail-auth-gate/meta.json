@@ -1,0 +1,5 @@
+{
+  "prTitle": "feat: list Jira boards without auth for faster local demos",
+  "prBody": "Removes the user/PAT gate on a Jira JSON route — must fail review.",
+  "expectedVerdict": "fail"
+}

@@ -1,0 +1,18 @@
+diff --git a/README.md b/README.md
+index 1111111..2222222 100644
+--- a/README.md
++++ b/README.md
+@@ -1,6 +1,6 @@
+ # Sprint Capacity Intelligence
+ 
+-Local development uses `npm run dev`.
++Local development uses `npm run dev` (Cloudflare workerd via Wrangler).
+ 
+ ## Dashboard
+ 
+@@ -10,3 +10,5 @@ After Google sign-in and Jira onboarding, open `/dashboard` to pick a board and
+ Selection is ephemeral React state — nothing is persisted server-side for the picker.
+ 
+ See `AGENTS.md` for architecture notes.
++
++The sprint picker shows a full-page spinner while boards or sprints load.

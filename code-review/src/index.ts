@@ -17,7 +17,12 @@ async function main(): Promise<void> {
   try {
     const result = await agent.review(request);
     process.stdout.write(`${JSON.stringify(result.review, null, 2)}\n`);
-    console.error(`\nReview finished (status=${result.status}, verdict=${result.review.verdict})`);
+    const usageSuffix = result.usage
+      ? `, tokens=${result.usage.totalTokens} (in=${result.usage.inputTokens} out=${result.usage.outputTokens})`
+      : "";
+    console.error(
+      `\nReview finished (status=${result.status}, verdict=${result.review.verdict}, latencyMs=${result.latencyMs}${usageSuffix})`,
+    );
   } catch (error) {
     if (isStartupError(error)) {
       console.error(`Startup failed: ${error.message} (retryable=${error.isRetryable})`);

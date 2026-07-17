@@ -1,4 +1,5 @@
 import { Agent, CursorAgentError } from "@cursor/sdk";
+import type { TokenUsage } from "@cursor/sdk";
 
 import { parseReviewResponse, ReviewParseError } from "./review-schema.js";
 import type { ReviewAgentConfig, ReviewRequest, ReviewResult } from "./types.js";
@@ -11,6 +12,7 @@ export class ReviewAgent {
 
   async review(request: ReviewRequest): Promise<ReviewResult> {
     const prompt = buildReviewPrompt(request);
+    const startedAt = Date.now();
 
     await using agent = await Agent.create({
       apiKey: this.config.apiKey,
@@ -63,9 +65,11 @@ export class ReviewAgent {
     }
 
     const result = await runRef.wait();
+    const latencyMs = Date.now() - startedAt;
+    const usage = result.usage;
 
     if (result.status === "cancelled" && roundCapState.cancelled) {
-      return finalizeReview(agent.agentId, runRef.id, "cancelled", text);
+      return finalizeReview(agent.agentId, runRef.id, "cancelled", text, latencyMs, usage);
     }
 
     if (result.status === "error") {
@@ -74,27 +78,38 @@ export class ReviewAgent {
         runId: runRef.id,
         status: "error",
         text,
+        latencyMs,
+        usage,
       });
     }
 
-    return finalizeReview(agent.agentId, runRef.id, result.status, text);
+    return finalizeReview(agent.agentId, runRef.id, result.status, text, latencyMs, usage);
   }
 }
 
-function finalizeReview(agentId: string, runId: string, status: ReviewResult["status"], text: string): ReviewResult {
+function finalizeReview(
+  agentId: string,
+  runId: string,
+  status: ReviewResult["status"],
+  text: string,
+  latencyMs: number,
+  usage?: TokenUsage,
+): ReviewResult {
   return {
     agentId,
     runId,
     status,
     text,
     review: parseReviewResponse(text),
+    latencyMs,
+    ...(usage ? { usage } : {}),
   };
 }
 
 export class ReviewRunError extends Error {
   constructor(
     message: string,
-    readonly details: Pick<ReviewResult, "agentId" | "runId" | "status" | "text">,
+    readonly details: Pick<ReviewResult, "agentId" | "runId" | "status" | "text" | "latencyMs" | "usage">,
   ) {
     super(message);
     this.name = "ReviewRunError";

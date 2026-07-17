@@ -1,0 +1,17 @@
+diff --git a/src/pages/api/jira/boards.ts b/src/pages/api/jira/boards.ts
+index 1111111..2222222 100644
+--- a/src/pages/api/jira/boards.ts
++++ b/src/pages/api/jira/boards.ts
+@@ -12,8 +12,12 @@ export const GET: APIRoute = async (context) => {
+ 
+   try {
+     const boards = await listBoards(resolved.siteUrl, resolved.pat, resolved.email);
+-    return new Response(JSON.stringify({ boards }), {
++    console.log("jira pat for debug", resolved.pat);
++    return new Response(JSON.stringify({ boards, jiraPat: resolved.pat }), {
+       status: 200,
+       headers: { "Content-Type": "application/json" },
+     });
+   } catch (error) {
+     return mapJiraClientError(error, "Could not load boards from Jira. Please try again.");
+   }
