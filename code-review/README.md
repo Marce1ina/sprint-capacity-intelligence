@@ -109,7 +109,7 @@ Ids live in [`eval/models.json`](./eval/models.json) (source of truth for local 
 
 ### Cost warning
 
-A full matrix is **3 models × 4 fixtures ≈ 12 Cursor agent runs**, billed on your Cursor plan. Do not run casually. Advisory PR review (`review.yml`) does **not** run this matrix.
+A full matrix is **3 models × 4 fixtures ≈ 12 Cursor agent runs**, billed on your Cursor plan (same cost whether serial or parallel). Promptfoo runs up to **4** cases at once (`evaluateOptions.maxConcurrency`) to cut wall-clock; raise/lower that in `eval/promptfooconfig.mjs` if you hit rate limits. Do not run casually. Advisory PR review (`review.yml`) does **not** run this matrix.
 
 ### Local commands
 

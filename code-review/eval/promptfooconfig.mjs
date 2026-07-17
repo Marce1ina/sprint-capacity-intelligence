@@ -44,7 +44,9 @@ const config = {
   })),
   tests: "file://generate-tests.ts",
   evaluateOptions: {
-    maxConcurrency: 1,
+    // Same ~12 billed runs either way; >1 only shortens wall-clock.
+    // Cap below matrix size to ease Cursor rate limits (3 models × 4 fixtures).
+    maxConcurrency: 4,
     showProgressBar: true,
   },
   outputPath: "eval/results/latest.json",
