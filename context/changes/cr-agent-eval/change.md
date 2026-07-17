@@ -1,7 +1,7 @@
 ---
 change_id: cr-agent-eval
 title: Cr agent eval
-status: implementing
+status: implemented
 created: 2026-07-17
 updated: 2026-07-17
 archived_at: null
