@@ -98,4 +98,4 @@ Always mock modules (`vi.mock(...)`) **before** importing the handler under test
 GitHub Actions:
 
 - `.github/workflows/ci.yml` — lint + build on every push and PR to `master`. Requires `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as repository secrets.
-- `.github/workflows/review.yml` — advisory AI code review on PRs to `master` (Cursor). Requires `CURSOR_API_KEY`; posts a PR comment and toggles `ai-cr-passed` / `ai-cr-failed`. Green check ≠ pass label. See `code-review/README.md`.
+- `.github/workflows/review.yml` — advisory AI code review on PRs to `master` (Cursor). Requires `CURSOR_API_KEY` on the **PRD** GitHub Environment; posts a PR comment and toggles `ai-cr-passed` / `ai-cr-failed`. Green check ≠ pass label. See `code-review/README.md`.
