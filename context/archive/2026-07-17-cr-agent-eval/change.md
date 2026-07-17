@@ -1,10 +1,10 @@
 ---
 change_id: cr-agent-eval
 title: Cr agent eval
-status: impl_reviewed
+status: archived
 created: 2026-07-17
 updated: 2026-07-17
-archived_at: null
+archived_at: 2026-07-17T19:17:35Z
 ---
 
 ## Notes
