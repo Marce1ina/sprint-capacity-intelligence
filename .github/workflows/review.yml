@@ -17,6 +17,7 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-latest
+    environment: PRD
     # Fork PRs: skip paid agent run and GitHub side effects (token often cannot write).
     if: >-
       github.event_name != 'pull_request' ||

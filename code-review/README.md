@@ -97,7 +97,7 @@ Agent streaming logs go to stderr. Exit code `3` means the response failed Zod v
 
 Before expecting AI review on PRs:
 
-1. Set repo secret `CURSOR_API_KEY` (required; workflow fails without it).
+1. Set `CURSOR_API_KEY` on the **PRD** GitHub Environment (the workflow job uses `environment: PRD`). A repo-level secret alone is not enough unless you remove that `environment` key.
 2. Optional repo variables: `REVIEW_MODEL`, `REVIEW_MAX_ROUNDS`.
 3. Labels `ai-cr-passed` and `ai-cr-failed` — created automatically on first successful run, or create them manually if the token cannot create labels.
 4. The check is **advisory**: a green workflow does **not** mean `verdict=pass`. Look at the PR comment and `ai-cr-*` label.
