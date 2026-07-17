@@ -7,11 +7,31 @@ import { readFileSync } from "node:fs";
 
 const evalDir = path.dirname(fileURLToPath(import.meta.url));
 
-const modelsJson = JSON.parse(readFileSync(path.join(evalDir, "models.json"), "utf8"));
+/**
+ * @typedef {{ models: string[] }} ModelsFile
+ */
 
-if (!Array.isArray(modelsJson.models) || modelsJson.models.length === 0) {
-  throw new Error("eval/models.json must declare a non-empty models array");
+/**
+ * @param {unknown} value
+ * @returns {ModelsFile}
+ */
+function parseModelsFile(value) {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    !("models" in value) ||
+    !Array.isArray(value.models) ||
+    value.models.length === 0 ||
+    !value.models.every((m) => typeof m === "string")
+  ) {
+    throw new Error("eval/models.json must declare a non-empty models array");
+  }
+  return { models: value.models };
 }
+
+const modelsJson = parseModelsFile(
+  /** @type {unknown} */ (JSON.parse(readFileSync(path.join(evalDir, "models.json"), "utf8"))),
+);
 
 /** @type {import('promptfoo').TestSuiteConfig} */
 const config = {
