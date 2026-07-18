@@ -2,8 +2,8 @@
   "package": "@przeprogramowani/10x-cli",
   "version": "1.10.0",
   "manifestVersion": 3,
-  "lastApplied": "2026-07-18T09:37:40.644Z",
-  "lessonId": "m5l4",
+  "lastApplied": "2026-07-18T10:11:50.500Z",
+  "lessonId": "m5l5",
   "course": "10xdevs3",
   "tool": "cursor",
   "files": {
@@ -292,6 +292,14 @@
         ],
         "contentHashes": {
           "SKILL.md": "91b4900def58519cd0d9ce4a04a10b448a9636c31124bf08a50848e2b8befd95"
+        }
+      },
+      "10x-goal-implement": {
+        "files": [
+          "SKILL.md"
+        ],
+        "contentHashes": {
+          "SKILL.md": "cbd613949e565162105b3f1540cd9415b69b5c3e5b5a0e35f64b1640296c1f26"
         }
       }
     },
@@ -1642,6 +1650,18 @@
         "m5l4-github-packages-uninstall.js.template",
         "m5l4-github-packages-publish-ai-toolkit.yml.template"
       ]
+    },
+    "m5l5": {
+      "appliedAt": "2026-07-18T10:11:50.499Z",
+      "skills": {
+        "10x-goal-implement": {
+          "files": [
+            "SKILL.md"
+          ]
+        }
+      },
+      "prompts": [],
+      "configs": []
     }
   }
 }
