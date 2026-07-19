@@ -1,17 +1,23 @@
-# 10x Astro Starter
+# Sprint Capacity Intelligence
 
-![](./public/template.png)
+Dashboard for engineering managers to catch sprint overload before it starts. Story points alone don't tell you if someone can actually deliver — a person can be under their point ceiling and still be crushed by meetings and constant context switching. This tool combines Jira workload with each assignee's calendar to surface a per-person risk level (Low/Medium/High/Critical), so an EM can rebalance scope before committing to the sprint instead of finding out mid-sprint.
 
-A modern, opinionated starter template for building fast, accessible web applications.
+## Features
+
+- Google OAuth sign-in via Supabase Auth
+- Guided onboarding to store a Jira PAT (AES-encrypted at rest)
+- Board → sprint selection, with per-assignee invite links so each engineer connects their own Google Calendar
+- Per-person risk table combining story points, meeting hours, and work/meeting context switches into a qualitative risk level
+- Account settings with two-step account deletion (purges stored Jira and calendar credentials)
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v6 - Modern web framework with server-first rendering
-- [React](https://react.dev/) v19 - UI library for interactive components
+- [Astro](https://astro.build/) v6 - Server-rendered app shell (SSR, `output: "server"`)
+- [React](https://react.dev/) v19 - Interactive islands (sprint picker, settings)
 - [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4 - Utility-first CSS framework
-- [Supabase](https://supabase.com/) - Authentication and backend-as-a-service
-- [Cloudflare Workers](https://workers.cloudflare.com/) - Edge deployment runtime
+- [Tailwind CSS](https://tailwindcss.com/) v4 + shadcn/ui - Styling and components
+- [Supabase](https://supabase.com/) - Auth (Google OAuth) and Postgres storage for encrypted integration tokens (Jira PAT, assignee Google Calendar OAuth)
+- [Cloudflare Workers](https://workers.cloudflare.com/) - Edge deployment runtime (via `@astrojs/cloudflare`)
 
 ## Prerequisites
 
@@ -23,8 +29,8 @@ A modern, opinionated starter template for building fast, accessible web applica
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
+git clone https://github.com/Marce1ina/sprint-capacity-intelligence.git
+cd sprint-capacity-intelligence
 ```
 
 2. Install dependencies:
@@ -210,19 +216,31 @@ SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
 | `/api/account/delete`  | Permanently deletes account and stored data (POST; requires auth)         |
 | `/onboarding`          | Jira PAT + site URL setup (requires auth; redirects to `/` if done)       |
 | `/api/onboarding/jira` | Validates and saves Jira credentials (POST form)                          |
-| `/`                    | Sprint picker — board/sprint selection and assignee story-point totals    |
+| `/`                    | Dashboard — board/sprint selection and per-assignee risk table            |
+| `/invite/:token`       | Assignee-facing page to connect Google Calendar via an invite link        |
 
 Route protection and onboarding guards are handled in `src/middleware.ts`.
 
 ### Jira API routes
 
-Authenticated JSON endpoints used by the dashboard sprint picker. All require a signed-in user with a stored Jira PAT; responses never include the PAT or decrypted token payload.
+Authenticated JSON endpoints used by the dashboard. All require a signed-in user with a stored Jira PAT; responses never include the PAT or decrypted token payload.
 
-| Route                                       | Description                                              |
-| ------------------------------------------- | -------------------------------------------------------- |
-| `GET /api/jira/boards`                      | Lists accessible Jira boards for the board dropdown      |
-| `GET /api/jira/boards/:boardId/sprints`     | Lists active and future sprints for the selected board   |
-| `GET /api/jira/sprints/:sprintId/assignees` | Aggregates assignees and total story points for a sprint |
+| Route                                       | Description                                                                       |
+| ------------------------------------------- | --------------------------------------------------------------------------------- |
+| `GET /api/jira/boards`                      | Lists accessible Jira boards for the board dropdown                               |
+| `GET /api/jira/boards/:boardId/sprints`     | Lists active and future sprints for the selected board                            |
+| `GET /api/jira/sprints/:sprintId/assignees` | Lists sprint assignees and their story points                                     |
+| `GET /api/jira/sprints/:sprintId/risk`      | Computes per-assignee risk from story points, meeting hours, and context switches |
+| `POST /api/jira/sprints/:sprintId/invites`  | Creates (or returns) a Google Calendar connect link for a sprint assignee         |
+
+### Assignee calendar invite routes
+
+Unauthenticated (token-based) endpoints an invited assignee hits to connect their calendar — no Google sign-in to the app itself required.
+
+| Route                             | Description                                                           |
+| --------------------------------- | --------------------------------------------------------------------- |
+| `GET /api/invite/:token/start`    | Starts the assignee's Google Calendar OAuth flow for the invite token |
+| `GET /api/invite/:token/callback` | Exchanges the OAuth code and stores the assignee's calendar token     |
 
 ### Jira PAT permissions
 
@@ -234,59 +252,14 @@ The onboarding PAT must be able to **browse** boards, sprints, and issues on the
 
 Create the token in Jira → **Account settings → Security → API tokens**, then paste it with your Jira site URL during onboarding.
 
-### User journey (dashboard sprint picker)
+### User journey (sprint risk dashboard)
 
-1. Sign in with Google at `/auth/signin`.
-2. Complete onboarding at `/onboarding` with Jira site URL and PAT (skipped if already configured).
-3. Open `/` — boards load automatically in the board dropdown.
-4. Select a board — active and future sprints appear in the sprint dropdown.
-5. Select a sprint — the assignee table shows each person (plus "Unassigned" when applicable) with summed story points.
+1. EM signs in with Google at `/auth/signin`.
+2. Completes onboarding at `/onboarding` with Jira site URL and PAT (skipped if already configured).
+3. Opens `/` — boards load automatically, then selects a board and a sprint.
+4. Sends each assignee an invite link (`POST /api/jira/sprints/:sprintId/invites`) to connect their Google Calendar at `/invite/:token`.
+5. Once assignees have connected, the risk table shows each person's story points, meeting hours, context switches, and an overall risk level — partial results are shown for assignees who haven't connected yet.
 6. On Jira errors, a banner appears with a retry action; a full-page spinner covers the card during fetches.
-7. Board and sprint selection is ephemeral (cleared on page refresh).
+7. Board and sprint selection is ephemeral (cleared on page refresh); risk is evaluated only pre-sprint, not tracked during execution.
 
-Story points are read via the Jira Agile `storyPoints` field alias on sprint issues. This works on default Jira Software scrum boards but is instance-dependent.
-
-## Deployment
-
-This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/).
-
-1. Build the project:
-
-```bash
-npm run build
-```
-
-2. Deploy with Wrangler:
-
-```bash
-npx wrangler deploy
-```
-
-Set `SUPABASE_URL`, `SUPABASE_KEY`, `TOKEN_ENCRYPTION_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
-
-### Production readiness (account deletion)
-
-Before enabling account deletion in a hosted environment:
-
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` set in Cloudflare Wrangler secrets (and `.dev.vars` locally)
-- [ ] End-to-end delete smoke on deployed Worker URL (sign in → `/settings` → two-step delete → signed out on `/`)
-- [ ] Confirm no orphaned `integration_tokens` for the deleted test user in hosted Supabase Table Editor
-- [ ] Re-sign-in with the same Google account creates a fresh user and shows onboarding
-
-### Production smoke checklist
-
-Before marking a Jira-integrated deploy as ready, verify hosted configuration end-to-end on the live Worker URL (not just locally):
-
-1. **Hosted Supabase** — `integration_tokens` table exists (apply migrations via `npx supabase db push` or SQL Editor) and the EM user has a Jira token row after onboarding.
-2. **Google OAuth** — provider enabled in Supabase Dashboard; Site URL and redirect URLs point at the Workers origin.
-3. **Cloudflare secrets** — `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` set on the Worker (`npx wrangler secret list`).
-4. **Dashboard flow** — sign in on prod, open `/`, select board → sprint → assignee table loads with story point totals from the real Jira site.
-5. **No token leakage** — browser Network tab shows no PAT or decrypted credentials in any `/api/jira/*` response.
-
-## CI
-
-GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` as repository secrets in GitHub for the build step. `SUPABASE_SERVICE_ROLE_KEY` is not required for CI build but is required at runtime for account deletion.
-
-## License
-
-MIT
+Story points are read via the Jira Agile `storyPoints` field alias on sprint issues (instance-dependent on default Jira Software scrum boards). Risk banding logic lives in `src/lib/services/risk-scoring.ts`.
