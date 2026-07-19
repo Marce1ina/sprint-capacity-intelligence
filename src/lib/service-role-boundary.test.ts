@@ -57,7 +57,7 @@ describe("service role boundary", () => {
       }
     }
 
-    expect(importers.sort()).toEqual(["src/pages/api/account/delete.ts"].sort());
+    expect(importers.sort()).toEqual(["src/lib/invite-api-context.ts", "src/pages/api/account/delete.ts"].sort());
   });
 
   it("never constructs IntegrationTokenService with createAdminClient or its alias", () => {

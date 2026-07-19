@@ -53,3 +53,18 @@ export interface SprintAssignee {
   displayName: string;
   totalStoryPoints: number;
 }
+
+export type SprintInviteStatus = "pending" | "consumed";
+
+export interface SprintInvite {
+  id: string;
+  sprintId: number;
+  jiraAccountId: string;
+  jiraDisplayName: string;
+  invitedBy: string;
+  token: string;
+  status: SprintInviteStatus;
+  connectedUserId: string | null;
+  createdAt: string;
+  consumedAt: string | null;
+}
