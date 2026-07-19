@@ -256,6 +256,21 @@ export async function listActiveFutureSprints(
   return raw.map(({ id, name, state, startDate, endDate }) => ({ id, name, state, startDate, endDate }));
 }
 
+export async function getSprintById(
+  siteUrl: string,
+  pat: string,
+  accountEmail: string,
+  sprintId: number,
+): Promise<JiraSprint> {
+  const raw = await fetchJiraJson<{ id: number; name: string; state: string; startDate?: string; endDate?: string }>(
+    siteUrl,
+    pat,
+    accountEmail,
+    `/rest/agile/1.0/sprint/${sprintId}`,
+  );
+  return { id: raw.id, name: raw.name, state: raw.state, startDate: raw.startDate, endDate: raw.endDate };
+}
+
 export async function getSprintAssignees(
   siteUrl: string,
   pat: string,

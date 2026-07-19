@@ -46,8 +46,22 @@ function adminClientVariableNames(content: string): string[] {
   return names;
 }
 
+/**
+ * Deliberate, narrow loosening of the service-role boundary: the risk-computation
+ * service must read a *different* user's Calendar token (owned by the connected
+ * assignee, not the EM viewing the dashboard), which the EM's own RLS-scoped
+ * client cannot reach. `computeSprintRisk` takes the admin client as a parameter
+ * (constructed by its route caller), so only the token-service-construction check
+ * needs widening here — the importer list gets its route entry in the phase that
+ * adds the route. This allowlist keeps catching any *other* file that tries the
+ * same pattern.
+ */
+const ALLOWED_ADMIN_CLIENT_IMPORTERS = ["src/lib/invite-api-context.ts", "src/pages/api/account/delete.ts"];
+
+const ALLOWED_ADMIN_TOKEN_SERVICE_FILES = ["src/lib/services/risk-computation-service.ts"];
+
 describe("service role boundary", () => {
-  it("imports createAdminClient only from account/delete route (plus definition)", () => {
+  it("imports createAdminClient only from the allowlisted files", () => {
     const importers: string[] = [];
 
     for (const file of walkSourceFiles(SRC_ROOT)) {
@@ -57,25 +71,29 @@ describe("service role boundary", () => {
       }
     }
 
-    expect(importers.sort()).toEqual(["src/lib/invite-api-context.ts", "src/pages/api/account/delete.ts"].sort());
+    expect(importers.sort()).toEqual([...ALLOWED_ADMIN_CLIENT_IMPORTERS].sort());
   });
 
-  it("never constructs IntegrationTokenService with createAdminClient or its alias", () => {
+  it("only constructs IntegrationTokenService with an admin client in the allowlisted files", () => {
     const violations: string[] = [];
 
     for (const file of walkSourceFiles(SRC_ROOT)) {
       const content = readFileSync(file, "utf-8");
       const adminVars = adminClientVariableNames(content);
+      const relativePath = repoRelative(file);
+      if (ALLOWED_ADMIN_TOKEN_SERVICE_FILES.includes(relativePath)) {
+        continue;
+      }
 
       if (/new IntegrationTokenService\s*\(\s*createAdminClient\s*\(/.test(content)) {
-        violations.push(repoRelative(file));
+        violations.push(relativePath);
         continue;
       }
 
       for (const adminVar of adminVars) {
         const pattern = new RegExp(`new IntegrationTokenService\\s*\\(\\s*${adminVar}\\b`);
         if (pattern.test(content)) {
-          violations.push(repoRelative(file));
+          violations.push(relativePath);
         }
       }
     }

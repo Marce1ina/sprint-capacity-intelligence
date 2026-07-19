@@ -100,6 +100,21 @@ export class SprintInviteService {
     return toSprintInvite(data);
   }
 
+  async getInvitesBySprintId(sprintId: number): Promise<SprintInvite[]> {
+    const { data, error } = await this.supabase
+      .from("sprint_invites")
+      .select(
+        "id, sprint_id, jira_account_id, jira_display_name, invited_by, token, status, connected_user_id, created_at, consumed_at",
+      )
+      .eq("sprint_id", sprintId);
+
+    if (error) {
+      throw error;
+    }
+
+    return (data as SprintInviteRow[]).map(toSprintInvite);
+  }
+
   async markConsumed(token: string, connectedUserId: string): Promise<boolean> {
     const { data, error } = await this.supabase
       .from("sprint_invites")

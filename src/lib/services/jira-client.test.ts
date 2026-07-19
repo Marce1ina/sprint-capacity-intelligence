@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SECRET_PROBE, TEST_JIRA_SITE } from "@/test/fixtures";
 import { assertNoSecretProbe } from "@/test/secret-scan";
 import { JiraValidationError } from "@/types";
-import { listBoards } from "@/lib/services/jira-client";
+import { getSprintById, listBoards } from "@/lib/services/jira-client";
 
 describe("jira-client error sanitization", () => {
   afterEach(() => {
@@ -29,5 +29,39 @@ describe("jira-client error sanitization", () => {
       );
       return true;
     });
+  });
+});
+
+describe("getSprintById", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("fetches a single sprint's window directly by sprintId, without needing a boardId", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 99,
+          name: "Sprint 99",
+          state: "active",
+          startDate: "2026-07-01",
+          endDate: "2026-07-14",
+        }),
+        { status: 200 },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const sprint = await getSprintById(TEST_JIRA_SITE, SECRET_PROBE, "user@example.com", 99);
+
+    expect(sprint).toEqual({
+      id: 99,
+      name: "Sprint 99",
+      state: "active",
+      startDate: "2026-07-01",
+      endDate: "2026-07-14",
+    });
+    const requestedUrl = new URL(String(fetchMock.mock.calls[0]?.[0]));
+    expect(requestedUrl.pathname).toBe("/rest/agile/1.0/sprint/99");
   });
 });
