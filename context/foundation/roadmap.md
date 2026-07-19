@@ -3,7 +3,7 @@ project: "Sprint Capacity Intelligence"
 version: 1
 status: active
 created: 2026-06-05
-updated: 2026-06-14
+updated: 2026-07-19
 prd_version: 1
 main_goal: market-feedback
 top_blocker: time
@@ -32,19 +32,18 @@ Engineering Managers commit to sprint scope without knowing whether the team has
 | F-01 | integration-token-store     | (foundation) persist Jira PAT and calendar OAuth tokens securely                                                                             | —             | Access Control, NFR guardrails | done     |
 | S-01 | google-auth-jira-onboarding | sign in with Google and configure Jira PAT during onboarding                                                                                 | F-01          | FR-001, FR-002                 | done     |
 | S-02 | jira-sprint-picker          | select a sprint from Jira and see its assignees                                                                                              | S-01          | FR-003                         | done     |
-| S-03 | assignee-calendar-invite    | invite sprint assignees to connect Google Calendar; assignee connects via invite link                                                        | S-02          | FR-004, FR-005                 | proposed |
+| S-03 | assignee-calendar-invite    | invite sprint assignees to connect Google Calendar; assignee connects via invite link                                                        | S-02          | FR-004, FR-005                 | done     |
 | S-04 | sprint-risk-table           | view a per-person risk table for the selected sprint (story points, meeting hours, context switches, risk level) for each connected assignee | S-02, S-03    | US-01, FR-006, FR-007          | proposed |
 | S-05 | delete-user-account         | permanently delete their account and all associated stored data (integration tokens, profile)                                                | S-01          | Access Control, NFR guardrails | done     |
 
 ## Baseline
 
-What's already in place in the codebase as of `2026-06-05` (auto-researched + user-confirmed).
-Foundations below assume these are present and do NOT re-scaffold them.
+What's already in place in the codebase as of `2026-07-19` (F-01 through S-03 done; only S-04 remains).
 
-- **Frontend:** present — Astro 6 SSR + React 19 islands; file-based routing in `src/pages/`; shadcn/ui scaffold (only `button.tsx` so far).
-- **Backend / API:** partial — Astro SSR + Cloudflare adapter; `src/middleware.ts`; auth-only API routes (`signin`/`signup`/`signout`); no domain endpoints.
-- **Data:** partial — Supabase JS/SSR client for auth only; `supabase/config.toml` present; no migrations, schema, or seeded data.
-- **Auth:** partial — Supabase email/password scaffold with cookie SSR client and route middleware; Google OAuth (PRD requirement) not wired.
+- **Frontend:** present — Astro 6 SSR + React 19 islands; file-based routing in `src/pages/`; shadcn/ui scaffold; sprint picker + assignee invite UI landed.
+- **Backend / API:** present — Astro SSR + Cloudflare adapter; `src/middleware.ts`; auth routes; Jira boards/sprints/assignees routes; invite generation + calendar connect routes.
+- **Data:** present — Supabase schema with `integration_tokens` (Jira PAT, calendar OAuth), invite records; migrations in `supabase/migrations/`.
+- **Auth:** present — Supabase email/password + Google OAuth (PKCE) wired end-to-end; per-assignee Google Calendar OAuth via invite link.
 - **Deploy / infra:** partial — production Worker live (`sprint-capacity-intelligence.marcelina-kucieba.workers.dev`); `wrangler.jsonc` aligned + SESSION KV pinned; Cloudflare Workers Builds connected and auto-deploy verified manually; GitHub Actions lint+build only — deploy job not implemented (intended future target per `tech-stack.md` `ci_default_flow: auto-deploy-on-merge`).
 - **Observability:** partial — Cloudflare Workers observability flag in `wrangler.jsonc` only; no app-level logging, error tracking, or metrics.
 
@@ -100,10 +99,10 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Parallel with:** —
 - **Blockers:** —
 - **Unknowns:**
-  - Invite link mechanism without groups UX (email vs shareable URL vs both) — Owner: user. Block: no (PRD commits to invite/link path for MVP; default to shareable link in planning).
-  - Per-user OAuth vs EM delegated calendar read — Owner: user. Block: no (partial results mitigate; per-user OAuth is PRD-committed MVP path).
-- **Risk:** Two Open Questions remain, but time pressure favors committing to the PRD's invite/link + per-user OAuth path rather than blocking — unblocks S-04 with acceptable partial coverage.
-- **Status:** proposed
+  - ~~Invite link mechanism without groups UX~~ — resolved: shareable link, EM copies manually, no email delivery.
+  - ~~Per-user OAuth vs EM delegated calendar read~~ — resolved: per-user OAuth (assignee completes Google consent, tokens stored against their own account).
+- **Risk:** Two Open Questions remained at planning time; both resolved during implementation per the PRD's committed invite/link + per-user OAuth path — S-04 now unblocked.
+- **Status:** done
 
 ### S-04: Per-person sprint risk table
 
@@ -116,7 +115,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Risk band threshold tuning (qualitative mapping from workload + meetings + context switches) — Owner: user. Block: no.
   - Long-running analysis UX (NFR: visible progress when operation exceeds two seconds) — Owner: user. Block: no.
-- **Risk:** North star slice — proves the core hypothesis end-to-end; sequenced immediately after calendar connect because US-01 requires at least one connected assignee and real Jira sprint data.
+- **Risk:** North star slice — proves the core hypothesis end-to-end. Both prerequisites (S-02, S-03) are done — nothing left blocking this slice.
 - **Status:** proposed
 
 ### S-05: EM account deletion
@@ -144,8 +143,10 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Open Roadmap Questions
 
-1. **How does the app obtain each assignee's calendar events?** — Per-user OAuth (invite/link) vs EM delegated read. Owner: user. Block: `roadmap-wide` for complete multi-person table; partial results mitigate for MVP (per PRD Open Questions #1).
-2. **How are assignees invited to connect without groups UX?** — Invite link, email, or other mechanism. Owner: user. Block: S-03 planning detail (default: shareable invite link per PRD FR-004 committed path).
+Both resolved during S-03 implementation:
+
+1. ~~**How does the app obtain each assignee's calendar events?**~~ — Resolved: per-user OAuth. Assignee completes Google consent (calendar read-only, offline access) via their invite link; tokens stored against their own Supabase account.
+2. ~~**How are assignees invited to connect without groups UX?**~~ — Resolved: shareable invite link, EM copies manually from the assignee table. No email delivery, no groups UX.
 
 ## Parked
 
@@ -158,6 +159,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Done
 
+- **S-03: user can invite sprint assignees to connect their Google Calendar; assignee can connect via invite link (partial results OK — unconnected assignees omitted from output).** — Archived 2026-07-19 → `context/archive/2026-07-19-assignee-calendar-invite/`. Lesson: —.
 - **F-01: (foundation) minimal schema and secure persistence for Jira PAT and calendar OAuth tokens landed; tokens not exposed in UI or logs.** — Archived 2026-06-14 → `context/archive/2026-06-05-integration-token-store/`. Lesson: —.
 - **S-01: user can sign in with Google and configure Jira access with a Personal Access Token during onboarding.** — Archived 2026-06-14 → `context/archive/2026-06-13-google-auth-jira-onboarding/`. Lesson: —.
 - **S-02: user can select a sprint from Jira and see the sprint's assignees for capacity analysis.** — Archived 2026-06-14 → `context/archive/2026-06-14-jira-sprint-picker/`. Lesson: —.
