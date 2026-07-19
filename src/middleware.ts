@@ -3,10 +3,10 @@ import { TOKEN_ENCRYPTION_KEY } from "astro:env/server";
 import { createClient } from "@/lib/supabase";
 import { IntegrationTokenService } from "@/lib/services/integration-token-service";
 
-const PROTECTED_ROUTES = ["/dashboard", "/onboarding", "/settings"];
+const PROTECTED_ROUTES = ["/", "/onboarding", "/settings"];
 
 function isProtectedPage(pathname: string): boolean {
-  return PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
+  return PROTECTED_ROUTES.some((route) => (route === "/" ? pathname === "/" : pathname.startsWith(route)));
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -34,12 +34,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
       const service = new IntegrationTokenService(supabase, TOKEN_ENCRYPTION_KEY ?? "");
       const hasJiraToken = await service.hasToken(context.locals.user.id, "jira");
 
-      if (pathname.startsWith("/dashboard") && !hasJiraToken) {
+      if (pathname === "/" && !hasJiraToken) {
         return context.redirect("/onboarding");
       }
 
       if (pathname.startsWith("/onboarding") && hasJiraToken) {
-        return context.redirect("/dashboard");
+        return context.redirect("/");
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "unknown error";
