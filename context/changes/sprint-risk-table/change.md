@@ -1,7 +1,7 @@
 ---
 change_id: sprint-risk-table
 title: Per-person sprint risk table for connected assignees
-status: planned
+status: implemented
 created: 2026-07-19
 updated: 2026-07-19
 archived_at: null
