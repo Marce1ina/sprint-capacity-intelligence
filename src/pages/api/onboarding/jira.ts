@@ -43,5 +43,5 @@ export const POST: APIRoute = async (context) => {
     return context.redirect("/onboarding?error=Could+not+save+Jira+credentials.+Please+try+again.");
   }
 
-  return context.redirect("/dashboard");
+  return context.redirect("/");
 };

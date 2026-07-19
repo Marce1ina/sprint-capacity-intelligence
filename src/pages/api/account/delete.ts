@@ -57,7 +57,7 @@ export const POST: APIRoute = async (context) => {
       console.error("Sign-out failed after account deletion:", message);
     }
 
-    return context.redirect("/");
+    return context.redirect("/auth/signin");
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown error";
     // eslint-disable-next-line no-console -- ops visibility; log without token data

@@ -284,30 +284,30 @@ No data migration. Any external links or bookmarks to `/dashboard` will break (e
 
 #### Automated
 
-- [x] 2.1 Build succeeds: `npm run build`
-- [x] 2.2 Type checking passes: `npm run typecheck`
-- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 Build succeeds: `npm run build` — da060e9
+- [x] 2.2 Type checking passes: `npm run typecheck` — da060e9
+- [x] 2.3 Linting passes: `npm run lint` — da060e9
 
 #### Manual
 
-- [x] 2.4 Visit `/` signed in with Jira token → dashboard renders
-- [x] 2.5 Visit `/` signed out → redirected to `/auth/signin`
-- [x] 2.6 Visit `/` signed in without Jira token → redirected to `/onboarding`
-- [x] 2.7 Visit `/dashboard` → 404
-- [x] 2.8 AppNav "Dashboard" link navigates to `/`
+- [x] 2.4 Visit `/` signed in with Jira token → dashboard renders — da060e9
+- [x] 2.5 Visit `/` signed out → redirected to `/auth/signin` — da060e9
+- [x] 2.6 Visit `/` signed in without Jira token → redirected to `/onboarding` — da060e9
+- [x] 2.7 Visit `/dashboard` → 404 — da060e9
+- [x] 2.8 AppNav "Dashboard" link navigates to `/` — da060e9
 
 ### Phase 3: Redirect Target Updates
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npm run typecheck`
-- [ ] 3.2 Linting passes: `npm run lint`
+- [x] 3.1 Type checking passes: `npm run typecheck`
+- [x] 3.2 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 3.3 Sign out from `/settings` → lands on `/auth/signin`
-- [ ] 3.4 Delete account from `/settings` → lands on `/auth/signin`
-- [ ] 3.5 Complete Jira onboarding → lands on `/` showing dashboard
+- [x] 3.3 Sign out from `/settings` → lands on `/auth/signin`
+- [x] 3.4 Delete account from `/settings` → lands on `/auth/signin`
+- [x] 3.5 Complete Jira onboarding → lands on `/` showing dashboard
 
 ### Phase 4: Test and Docs Updates
 
