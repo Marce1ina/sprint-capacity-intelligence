@@ -68,3 +68,17 @@ export interface SprintInvite {
   createdAt: string;
   consumedAt: string | null;
 }
+
+export type RiskBand = "low" | "medium" | "high" | "critical";
+
+export type RiskRowStatus = "ok" | "reconnect_required" | "error";
+
+export interface AssigneeRiskRow {
+  accountId: string;
+  displayName: string;
+  totalStoryPoints: number;
+  meetingHours: number;
+  contextSwitches: number;
+  riskBand: RiskBand;
+  status: RiskRowStatus;
+}
