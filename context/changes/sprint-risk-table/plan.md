@@ -396,7 +396,7 @@ None. No new Supabase tables or columns — reuses `integration_tokens` and `spr
 
 #### Manual
 
-- [ ] 4.5 `GET /api/jira/sprints/<real-sprint-id>/risk` against a live sprint returns 200 with plausible values
+- [x] 4.5 `GET /api/jira/sprints/<real-sprint-id>/risk` against a live sprint returns 200 with plausible values
 
 ### Phase 5: UI — SprintRiskTable
 
@@ -407,9 +407,9 @@ None. No new Supabase tables or columns — reuses `integration_tokens` and `spr
 
 #### Manual
 
-- [ ] 5.3 Risk table renders below assignee table with correct values and badges
-- [ ] 5.4 Expired-token assignee shows visible "reconnect required" state, not omitted
-- [ ] 5.5 Full-page spinner stays visible for entire request duration
+- [x] 5.3 Risk table renders below assignee table with correct values and badges
+- [x] 5.4 Expired-token assignee shows visible "reconnect required" state, not omitted
+- [x] 5.5 Full-page spinner stays visible for entire request duration
 
 ### Phase 6: Testing and readiness check
 
