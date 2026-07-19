@@ -277,24 +277,24 @@ No data migration. Any external links or bookmarks to `/dashboard` will break (e
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `npm run typecheck`
-- [x] 1.2 Linting passes: `npm run lint`
+- [x] 1.1 Type checking passes: `npm run typecheck` — 4ed49f4
+- [x] 1.2 Linting passes: `npm run lint` — 4ed49f4
 
 ### Phase 2: Merge Dashboard Into Home Route
 
 #### Automated
 
-- [ ] 2.1 Build succeeds: `npm run build`
-- [ ] 2.2 Type checking passes: `npm run typecheck`
-- [ ] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 Build succeeds: `npm run build`
+- [x] 2.2 Type checking passes: `npm run typecheck`
+- [x] 2.3 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.4 Visit `/` signed in with Jira token → dashboard renders
-- [ ] 2.5 Visit `/` signed out → redirected to `/auth/signin`
-- [ ] 2.6 Visit `/` signed in without Jira token → redirected to `/onboarding`
-- [ ] 2.7 Visit `/dashboard` → 404
-- [ ] 2.8 AppNav "Dashboard" link navigates to `/`
+- [x] 2.4 Visit `/` signed in with Jira token → dashboard renders
+- [x] 2.5 Visit `/` signed out → redirected to `/auth/signin`
+- [x] 2.6 Visit `/` signed in without Jira token → redirected to `/onboarding`
+- [x] 2.7 Visit `/dashboard` → 404
+- [x] 2.8 AppNav "Dashboard" link navigates to `/`
 
 ### Phase 3: Redirect Target Updates
 
