@@ -1,17 +1,22 @@
-# 10x Astro Starter
+# Sprint Capacity Intelligence
 
-![](./public/template.png)
+Dashboard for engineering managers to check Jira sprint capacity at a glance. Sign in with Google, connect a Jira PAT, pick a board and sprint, and see story points totalled per assignee — no manual spreadsheet tallying.
 
-A modern, opinionated starter template for building fast, accessible web applications.
+## Features
+
+- Google OAuth sign-in via Supabase Auth
+- Guided onboarding to store a Jira PAT (AES-encrypted at rest)
+- Board → sprint → assignee drill-down with summed story points
+- Account settings with two-step account deletion (purges stored Jira credentials)
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v6 - Modern web framework with server-first rendering
-- [React](https://react.dev/) v19 - UI library for interactive components
+- [Astro](https://astro.build/) v6 - Server-rendered app shell (SSR, `output: "server"`)
+- [React](https://react.dev/) v19 - Interactive islands (sprint picker, settings)
 - [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4 - Utility-first CSS framework
-- [Supabase](https://supabase.com/) - Authentication and backend-as-a-service
-- [Cloudflare Workers](https://workers.cloudflare.com/) - Edge deployment runtime
+- [Tailwind CSS](https://tailwindcss.com/) v4 + shadcn/ui - Styling and components
+- [Supabase](https://supabase.com/) - Auth (Google OAuth) and Postgres storage for encrypted integration tokens
+- [Cloudflare Workers](https://workers.cloudflare.com/) - Edge deployment runtime (via `@astrojs/cloudflare`)
 
 ## Prerequisites
 
@@ -23,8 +28,8 @@ A modern, opinionated starter template for building fast, accessible web applica
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
+git clone https://github.com/Marce1ina/sprint-capacity-intelligence.git
+cd sprint-capacity-intelligence
 ```
 
 2. Install dependencies:
@@ -282,6 +287,16 @@ Before marking a Jira-integrated deploy as ready, verify hosted configuration en
 3. **Cloudflare secrets** — `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` set on the Worker (`npx wrangler secret list`).
 4. **Dashboard flow** — sign in on prod, open `/`, select board → sprint → assignee table loads with story point totals from the real Jira site.
 5. **No token leakage** — browser Network tab shows no PAT or decrypted credentials in any `/api/jira/*` response.
+
+## Testing
+
+```bash
+npm run test          # Vitest full suite (once)
+npm run test:watch    # Vitest watch mode
+npm run test:rls      # RLS two-user isolation tests (requires local Supabase + Docker)
+```
+
+Tests are colocated with source (`src/lib/foo.test.ts` next to `src/lib/foo.ts`). Shared test helpers live in `src/test/`. `test:rls` skips automatically unless `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_USER_B_EMAIL`, `TEST_USER_B_PASSWORD` are set in `.env` and the local Supabase stack is running.
 
 ## CI
 
