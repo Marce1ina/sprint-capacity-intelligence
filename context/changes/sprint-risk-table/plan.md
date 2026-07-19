@@ -364,9 +364,9 @@ None. No new Supabase tables or columns — reuses `integration_tokens` and `spr
 
 #### Automated
 
-- [ ] 1.1 Unit tests pass: `npm run test -- src/lib/services/risk-scoring.test.ts`
-- [ ] 1.2 Type checking passes: `npm run typecheck`
-- [ ] 1.3 Linting passes: `npm run lint`
+- [x] 1.1 Unit tests pass: `npm run test -- src/lib/services/risk-scoring.test.ts` — f80b206
+- [x] 1.2 Type checking passes: `npm run typecheck` — f80b206
+- [x] 1.3 Linting passes: `npm run lint` — f80b206
 
 ### Phase 2: Google Calendar client
 
