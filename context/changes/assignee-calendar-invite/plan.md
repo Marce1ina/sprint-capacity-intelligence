@@ -385,7 +385,7 @@ Net-new table, no existing data to migrate. `sprint_invites` rows are never back
 #### Manual
 
 - [x] 4.5 Google Cloud Console consent-screen checklist completed (Calendar API enabled, scope added, test users added if in Testing mode)
-- [ ] 4.6 Hosted Supabase redirect URL configuration confirmed
-- [ ] 4.7 Migration applied to hosted database
-- [ ] 4.8 Full manual flow repeated against deployed Worker URL
-- [ ] 4.9 `google_calendar` row confirmed in hosted `integration_tokens` table
+- [x] 4.6 Hosted Supabase redirect URL configuration confirmed
+- [x] 4.7 Migration applied to hosted database
+- [x] 4.8 Full manual flow repeated against deployed Worker URL
+- [x] 4.9 `google_calendar` row confirmed in hosted `integration_tokens` table

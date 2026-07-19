@@ -1,7 +1,7 @@
 ---
 change_id: assignee-calendar-invite
 title: Invite sprint assignees to connect Google Calendar via invite link
-status: implementing
+status: implemented
 created: 2026-07-19
 updated: 2026-07-19
 archived_at: null
