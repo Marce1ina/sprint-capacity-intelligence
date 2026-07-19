@@ -50,13 +50,16 @@ function adminClientVariableNames(content: string): string[] {
  * Deliberate, narrow loosening of the service-role boundary: the risk-computation
  * service must read a *different* user's Calendar token (owned by the connected
  * assignee, not the EM viewing the dashboard), which the EM's own RLS-scoped
- * client cannot reach. `computeSprintRisk` takes the admin client as a parameter
- * (constructed by its route caller), so only the token-service-construction check
- * needs widening here — the importer list gets its route entry in the phase that
- * adds the route. This allowlist keeps catching any *other* file that tries the
- * same pattern.
+ * client cannot reach. `computeSprintRisk` takes the admin client as a parameter,
+ * constructed by its route caller (`risk.ts`), which is why that route is the
+ * actual importer of `createAdminClient` rather than the service itself. This
+ * allowlist keeps catching any *other* file that tries the same pattern.
  */
-const ALLOWED_ADMIN_CLIENT_IMPORTERS = ["src/lib/invite-api-context.ts", "src/pages/api/account/delete.ts"];
+const ALLOWED_ADMIN_CLIENT_IMPORTERS = [
+  "src/lib/invite-api-context.ts",
+  "src/pages/api/account/delete.ts",
+  "src/pages/api/jira/sprints/[sprintId]/risk.ts",
+];
 
 const ALLOWED_ADMIN_TOKEN_SERVICE_FILES = ["src/lib/services/risk-computation-service.ts"];
 

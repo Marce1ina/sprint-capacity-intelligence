@@ -389,10 +389,10 @@ None. No new Supabase tables or columns — reuses `integration_tokens` and `spr
 
 #### Automated
 
-- [ ] 4.1 Unit tests pass: `npm run test -- src/pages/api/jira/sprints/[sprintId]/risk.test.ts`
-- [ ] 4.2 Secret-scan assertion passes
-- [ ] 4.3 Type checking passes: `npm run typecheck`
-- [ ] 4.4 Linting passes: `npm run lint`
+- [x] 4.1 Unit tests pass: `npm run test -- src/pages/api/jira/sprints/[sprintId]/risk.test.ts`
+- [x] 4.2 Secret-scan assertion passes
+- [x] 4.3 Type checking passes: `npm run typecheck`
+- [x] 4.4 Linting passes: `npm run lint`
 
 #### Manual
 
