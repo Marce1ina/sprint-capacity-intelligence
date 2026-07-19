@@ -313,12 +313,12 @@ No data migration. Any external links or bookmarks to `/dashboard` will break (e
 
 #### Automated
 
-- [x] 4.1 Full unit/integration suite passes: `npm run test`
-- [x] 4.2 Type checking passes: `npm run typecheck`
-- [x] 4.3 Linting passes: `npm run lint`
-- [x] 4.4 E2E suite passes: `npx playwright test`
+- [x] 4.1 Full unit/integration suite passes: `npm run test` — f1bf115
+- [x] 4.2 Type checking passes: `npm run typecheck` — f1bf115
+- [x] 4.3 Linting passes: `npm run lint` — f1bf115
+- [x] 4.4 E2E suite passes: `npx playwright test` — f1bf115
 
 #### Manual
 
-- [x] 4.5 README route table read-through, no remaining `/dashboard` references
-- [x] 4.6 Full manual auth-flow walkthrough with no dead links
+- [x] 4.5 README route table read-through, no remaining `/dashboard` references — f1bf115
+- [x] 4.6 Full manual auth-flow walkthrough with no dead links — f1bf115
