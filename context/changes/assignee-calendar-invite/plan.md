@@ -349,29 +349,29 @@ Net-new table, no existing data to migrate. `sprint_invites` rows are never back
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npm run typecheck`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Unit tests pass for the invites route
+- [x] 2.1 Type checking passes: `npm run typecheck` — 4635d20
+- [x] 2.2 Linting passes: `npm run lint` — 4635d20
+- [x] 2.3 Unit tests pass for the invites route — 4635d20
 
 #### Manual
 
-- [x] 2.4 Invite link generated and copied from dashboard UI
-- [x] 2.5 Unassigned row has no Invite action
+- [x] 2.4 Invite link generated and copied from dashboard UI — 4635d20
+- [x] 2.5 Unassigned row has no Invite action — 4635d20
 
 ### Phase 3: Assignee-side connect flow
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npm run typecheck`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Unit tests pass for start/callback routes
+- [x] 3.1 Type checking passes: `npm run typecheck`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Unit tests pass for start/callback routes
 
 #### Manual
 
-- [ ] 3.4 Landing page shows sprint/assignee context for a pending invite
-- [ ] 3.5 Google consent completes and redirects to connected success state
-- [ ] 3.6 Revisiting a consumed link shows "already used," not the connect button
-- [ ] 3.7 Invalid token shows the invalid-link error state
+- [x] 3.4 Landing page shows sprint/assignee context for a pending invite
+- [x] 3.5 Google consent completes and redirects to connected success state
+- [x] 3.6 Revisiting a consumed link shows "already used," not the connect button
+- [x] 3.7 Invalid token shows the invalid-link error state
 
 ### Phase 4: Production readiness & verification
 
