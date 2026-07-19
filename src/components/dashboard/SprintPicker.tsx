@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ServerError } from "@/components/auth/ServerError";
@@ -118,14 +119,24 @@ export default function SprintPicker() {
             Select a board and sprint to view assignee workload.
           </p>
         ) : (
-          <AssigneeTable assignees={assignees} />
+          <AssigneeTable assignees={assignees} sprintId={selectedSprintId} />
         )}
       </div>
     </div>
   );
 }
 
-function AssigneeTable({ assignees }: { assignees: ReturnType<typeof useJiraSprintPicker>["assignees"] }) {
+type InviteState = "idle" | "loading" | "copied" | "error";
+
+function AssigneeTable({
+  assignees,
+  sprintId,
+}: {
+  assignees: ReturnType<typeof useJiraSprintPicker>["assignees"];
+  sprintId: number;
+}) {
+  const [inviteState, setInviteState] = useState<Record<string, InviteState>>({});
+
   if (assignees.length === 0) {
     return (
       <p className="rounded-lg border border-white/10 bg-white/5 px-4 py-8 text-center text-sm text-blue-100/60">
@@ -134,24 +145,64 @@ function AssigneeTable({ assignees }: { assignees: ReturnType<typeof useJiraSpri
     );
   }
 
+  async function handleInvite(accountId: string, displayName: string) {
+    setInviteState((prev) => ({ ...prev, [accountId]: "loading" }));
+    try {
+      const response = await fetch(`/api/jira/sprints/${sprintId}/invites`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jiraAccountId: accountId, jiraDisplayName: displayName }),
+      });
+      if (!response.ok) {
+        throw new Error("Invite request failed");
+      }
+      const data = (await response.json()) as { url: string };
+      await navigator.clipboard.writeText(data.url);
+      setInviteState((prev) => ({ ...prev, [accountId]: "copied" }));
+    } catch {
+      setInviteState((prev) => ({ ...prev, [accountId]: "error" }));
+    }
+  }
+
   return (
     <Table>
       <TableHeader>
         <TableRow className="border-white/10 hover:bg-transparent">
           <TableHead className="text-blue-100/80">Name</TableHead>
           <TableHead className="text-right text-blue-100/80">Story Points</TableHead>
+          <TableHead className="text-right text-blue-100/80">Invite</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {assignees.map((assignee) => (
-          <TableRow
-            key={assignee.accountId ?? "unassigned"}
-            className={cn("border-white/10 text-white hover:bg-white/5")}
-          >
-            <TableCell>{assignee.displayName}</TableCell>
-            <TableCell className="text-right font-medium tabular-nums">{assignee.totalStoryPoints}</TableCell>
-          </TableRow>
-        ))}
+        {assignees.map((assignee) => {
+          const accountId = assignee.accountId;
+          const state = accountId ? (inviteState[accountId] ?? "idle") : "idle";
+
+          return (
+            <TableRow key={accountId ?? "unassigned"} className={cn("border-white/10 text-white hover:bg-white/5")}>
+              <TableCell>{assignee.displayName}</TableCell>
+              <TableCell className="text-right font-medium tabular-nums">{assignee.totalStoryPoints}</TableCell>
+              <TableCell className="text-right">
+                {accountId && (
+                  <button
+                    type="button"
+                    disabled={state === "loading"}
+                    onClick={() => handleInvite(accountId, assignee.displayName)}
+                    className="rounded-lg border border-white/20 bg-white/10 px-3 py-1 text-xs text-white transition-colors hover:bg-white/20 disabled:opacity-50"
+                  >
+                    {state === "copied"
+                      ? "Copied"
+                      : state === "loading"
+                        ? "..."
+                        : state === "error"
+                          ? "Retry"
+                          : "Invite"}
+                  </button>
+                )}
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );

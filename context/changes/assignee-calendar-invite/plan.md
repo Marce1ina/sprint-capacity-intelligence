@@ -336,27 +336,27 @@ Net-new table, no existing data to migrate. `sprint_invites` rows are never back
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly: `npx supabase db reset`
-- [x] 1.2 Type checking passes: `npm run typecheck`
-- [x] 1.3 Linting passes: `npm run lint`
-- [x] 1.4 Guardrail test passes with updated allowlist
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` — 1e45382
+- [x] 1.2 Type checking passes: `npm run typecheck` — 1e45382
+- [x] 1.3 Linting passes: `npm run lint` — 1e45382
+- [x] 1.4 Guardrail test passes with updated allowlist — 1e45382
 
 #### Manual
 
-- [x] 1.5 New table verified in Supabase Studio (columns, unique constraint, RLS)
+- [x] 1.5 New table verified in Supabase Studio (columns, unique constraint, RLS) — 1e45382
 
 ### Phase 2: EM-side invite generation
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npm run typecheck`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Unit tests pass for the invites route
+- [x] 2.1 Type checking passes: `npm run typecheck`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Unit tests pass for the invites route
 
 #### Manual
 
-- [ ] 2.4 Invite link generated and copied from dashboard UI
-- [ ] 2.5 Unassigned row has no Invite action
+- [x] 2.4 Invite link generated and copied from dashboard UI
+- [x] 2.5 Unassigned row has no Invite action
 
 ### Phase 3: Assignee-side connect flow
 
