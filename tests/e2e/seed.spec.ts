@@ -16,7 +16,7 @@ test("sprint fetch progress indicator visible before data resolves", async ({ pa
     await route.continue();
   });
 
-  await page.goto("/dashboard");
+  await page.goto("/");
 
   // Loading spinner must be visible while request is in-flight.
   const spinner = page.locator('[aria-busy="true"]');

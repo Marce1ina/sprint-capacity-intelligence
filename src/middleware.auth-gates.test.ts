@@ -47,10 +47,10 @@ describe("middleware — auth gate redirect matrix", () => {
     vi.restoreAllMocks();
   });
 
-  it("redirects unauthenticated GET /dashboard to sign-in", async () => {
+  it("redirects unauthenticated GET / to sign-in", async () => {
     const context = createMockApiContext({
       user: null,
-      url: "http://localhost/dashboard",
+      url: "http://localhost/",
     });
 
     const response = await invokeMiddleware(context, next);
@@ -69,14 +69,14 @@ describe("middleware — auth gate redirect matrix", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("redirects authenticated user without Jira token from /dashboard to /onboarding", async () => {
+  it("redirects authenticated user without Jira token from / to /onboarding", async () => {
     const user = createMockUser();
     mockGetUser.mockResolvedValue({ data: { user }, error: null });
     mockHasToken.mockResolvedValue(false);
 
     const context = createMockApiContext({
       user,
-      url: "http://localhost/dashboard",
+      url: "http://localhost/",
     });
 
     const response = await invokeMiddleware(context, next);
@@ -85,7 +85,7 @@ describe("middleware — auth gate redirect matrix", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("redirects authenticated user with Jira token from /onboarding to /dashboard", async () => {
+  it("redirects authenticated user with Jira token from /onboarding to /", async () => {
     const user = createMockUser();
     mockGetUser.mockResolvedValue({ data: { user }, error: null });
     mockHasToken.mockResolvedValue(true);
@@ -96,7 +96,7 @@ describe("middleware — auth gate redirect matrix", () => {
     });
 
     const response = await invokeMiddleware(context, next);
-    assertRedirect(response, "/dashboard");
+    assertRedirect(response, "/");
     expect(mockHasToken).toHaveBeenCalledWith(user.id, "jira");
     expect(next).not.toHaveBeenCalled();
   });
@@ -117,14 +117,14 @@ describe("middleware — auth gate redirect matrix", () => {
     expect(next).toHaveBeenCalledOnce();
   });
 
-  it("allows authenticated user with Jira token on /dashboard without redirect", async () => {
+  it("allows authenticated user with Jira token on / without redirect", async () => {
     const user = createMockUser();
     mockGetUser.mockResolvedValue({ data: { user }, error: null });
     mockHasToken.mockResolvedValue(true);
 
     const context = createMockApiContext({
       user,
-      url: "http://localhost/dashboard",
+      url: "http://localhost/",
     });
 
     const response = await invokeMiddleware(context, next);
@@ -149,14 +149,14 @@ describe("middleware — auth gate redirect matrix", () => {
     expect(next).toHaveBeenCalledOnce();
   });
 
-  it("allows /dashboard when hasToken throws (fail-open degraded guard)", async () => {
+  it("allows / when hasToken throws (fail-open degraded guard)", async () => {
     const user = createMockUser();
     mockGetUser.mockResolvedValue({ data: { user }, error: null });
     mockHasToken.mockRejectedValue(new Error("database unavailable"));
 
     const context = createMockApiContext({
       user,
-      url: "http://localhost/dashboard",
+      url: "http://localhost/",
     });
 
     const response = await invokeMiddleware(context, next);

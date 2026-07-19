@@ -166,9 +166,9 @@ Per-user integration credentials (Jira PAT, Google Calendar OAuth tokens) are en
 openssl rand -base64 32
 ```
 
-| Variable                    | Description                                          |
-| --------------------------- | ---------------------------------------------------- |
-| `TOKEN_ENCRYPTION_KEY`      | 32-byte AES key, base64-encoded (server-only secret) |
+| Variable                    | Description                                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `TOKEN_ENCRYPTION_KEY`      | 32-byte AES key, base64-encoded (server-only secret)                                                   |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key from Supabase Dashboard → Settings → API (server-only; required for account deletion) |
 
 `SUPABASE_SERVICE_ROLE_KEY` is also used by cross-user calendar reads (roadmap slice S-04).
@@ -200,17 +200,17 @@ SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
 
 ### Auth routes
 
-| Route                  | Description                                                                  |
-| ---------------------- | ---------------------------------------------------------------------------- |
-| `/auth/signin`         | Google sign-in page ("Continue with Google")                                 |
-| `/api/auth/google`     | Starts Supabase Google OAuth PKCE flow                                       |
-| `/api/auth/callback`   | Exchanges OAuth code for session; redirects to `/onboarding`                 |
-| `/api/auth/signout`       | Ends session and redirects to `/`                                            |
-| `/settings`               | Account settings — email, sign-out, two-step account deletion (auth-only)    |
-| `/api/account/delete`     | Permanently deletes account and stored data (POST; requires auth)            |
-| `/onboarding`             | Jira PAT + site URL setup (requires auth; redirects to `/dashboard` if done) |
-| `/api/onboarding/jira` | Validates and saves Jira credentials (POST form)                             |
-| `/dashboard`           | Sprint picker — board/sprint selection and assignee story-point totals       |
+| Route                  | Description                                                               |
+| ---------------------- | ------------------------------------------------------------------------- |
+| `/auth/signin`         | Google sign-in page ("Continue with Google")                              |
+| `/api/auth/google`     | Starts Supabase Google OAuth PKCE flow                                    |
+| `/api/auth/callback`   | Exchanges OAuth code for session; redirects to `/onboarding`              |
+| `/api/auth/signout`    | Ends session and redirects to `/`                                         |
+| `/settings`            | Account settings — email, sign-out, two-step account deletion (auth-only) |
+| `/api/account/delete`  | Permanently deletes account and stored data (POST; requires auth)         |
+| `/onboarding`          | Jira PAT + site URL setup (requires auth; redirects to `/` if done)       |
+| `/api/onboarding/jira` | Validates and saves Jira credentials (POST form)                          |
+| `/`                    | Sprint picker — board/sprint selection and assignee story-point totals    |
 
 Route protection and onboarding guards are handled in `src/middleware.ts`.
 
@@ -218,11 +218,11 @@ Route protection and onboarding guards are handled in `src/middleware.ts`.
 
 Authenticated JSON endpoints used by the dashboard sprint picker. All require a signed-in user with a stored Jira PAT; responses never include the PAT or decrypted token payload.
 
-| Route                                      | Description                                              |
-| ------------------------------------------ | -------------------------------------------------------- |
-| `GET /api/jira/boards`                     | Lists accessible Jira boards for the board dropdown      |
-| `GET /api/jira/boards/:boardId/sprints`    | Lists active and future sprints for the selected board   |
-| `GET /api/jira/sprints/:sprintId/assignees`| Aggregates assignees and total story points for a sprint |
+| Route                                       | Description                                              |
+| ------------------------------------------- | -------------------------------------------------------- |
+| `GET /api/jira/boards`                      | Lists accessible Jira boards for the board dropdown      |
+| `GET /api/jira/boards/:boardId/sprints`     | Lists active and future sprints for the selected board   |
+| `GET /api/jira/sprints/:sprintId/assignees` | Aggregates assignees and total story points for a sprint |
 
 ### Jira PAT permissions
 
@@ -238,7 +238,7 @@ Create the token in Jira → **Account settings → Security → API tokens**, t
 
 1. Sign in with Google at `/auth/signin`.
 2. Complete onboarding at `/onboarding` with Jira site URL and PAT (skipped if already configured).
-3. Open `/dashboard` — boards load automatically in the board dropdown.
+3. Open `/` — boards load automatically in the board dropdown.
 4. Select a board — active and future sprints appear in the sprint dropdown.
 5. Select a sprint — the assignee table shows each person (plus "Unassigned" when applicable) with summed story points.
 6. On Jira errors, a banner appears with a retry action; a full-page spinner covers the card during fetches.
@@ -280,7 +280,7 @@ Before marking a Jira-integrated deploy as ready, verify hosted configuration en
 1. **Hosted Supabase** — `integration_tokens` table exists (apply migrations via `npx supabase db push` or SQL Editor) and the EM user has a Jira token row after onboarding.
 2. **Google OAuth** — provider enabled in Supabase Dashboard; Site URL and redirect URLs point at the Workers origin.
 3. **Cloudflare secrets** — `SUPABASE_URL`, `SUPABASE_KEY`, and `TOKEN_ENCRYPTION_KEY` set on the Worker (`npx wrangler secret list`).
-4. **Dashboard flow** — sign in on prod, open `/dashboard`, select board → sprint → assignee table loads with story point totals from the real Jira site.
+4. **Dashboard flow** — sign in on prod, open `/`, select board → sprint → assignee table loads with story point totals from the real Jira site.
 5. **No token leakage** — browser Network tab shows no PAT or decrypted credentials in any `/api/jira/*` response.
 
 ## CI

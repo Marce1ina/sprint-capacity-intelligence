@@ -30,7 +30,7 @@ test("board → sprint selection cascade reveals assignee story points", async (
 
   // Arm before navigation so the response isn't missed.
   const boardsLoaded = page.waitForResponse("**/api/jira/boards");
-  await page.goto("/dashboard");
+  await page.goto("/");
   await boardsLoaded;
 
   // Board combobox ready with options.

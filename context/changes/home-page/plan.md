@@ -300,25 +300,25 @@ No data migration. Any external links or bookmarks to `/dashboard` will break (e
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npm run typecheck`
-- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.1 Type checking passes: `npm run typecheck` — 4ed7cd9
+- [x] 3.2 Linting passes: `npm run lint` — 4ed7cd9
 
 #### Manual
 
-- [x] 3.3 Sign out from `/settings` → lands on `/auth/signin`
-- [x] 3.4 Delete account from `/settings` → lands on `/auth/signin`
-- [x] 3.5 Complete Jira onboarding → lands on `/` showing dashboard
+- [x] 3.3 Sign out from `/settings` → lands on `/auth/signin` — 4ed7cd9
+- [x] 3.4 Delete account from `/settings` → lands on `/auth/signin` — 4ed7cd9
+- [x] 3.5 Complete Jira onboarding → lands on `/` showing dashboard — 4ed7cd9
 
 ### Phase 4: Test and Docs Updates
 
 #### Automated
 
-- [ ] 4.1 Full unit/integration suite passes: `npm run test`
-- [ ] 4.2 Type checking passes: `npm run typecheck`
-- [ ] 4.3 Linting passes: `npm run lint`
-- [ ] 4.4 E2E suite passes: `npx playwright test`
+- [x] 4.1 Full unit/integration suite passes: `npm run test`
+- [x] 4.2 Type checking passes: `npm run typecheck`
+- [x] 4.3 Linting passes: `npm run lint`
+- [x] 4.4 E2E suite passes: `npx playwright test`
 
 #### Manual
 
-- [ ] 4.5 README route table read-through, no remaining `/dashboard` references
-- [ ] 4.6 Full manual auth-flow walkthrough with no dead links
+- [x] 4.5 README route table read-through, no remaining `/dashboard` references
+- [x] 4.6 Full manual auth-flow walkthrough with no dead links

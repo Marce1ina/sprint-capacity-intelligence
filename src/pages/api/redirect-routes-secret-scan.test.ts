@@ -85,7 +85,7 @@ describe("redirect routes — secret scan", () => {
 
     const location = response.headers.get("Location") ?? "";
     expect(location).not.toContain(SECRET_PROBE);
-    expect(location).toContain("/dashboard");
+    expect(new URL(location, "http://localhost").pathname).toBe("/");
   });
 
   it("POST /api/account/delete logs no probe refresh token when Google token read fails", async () => {
