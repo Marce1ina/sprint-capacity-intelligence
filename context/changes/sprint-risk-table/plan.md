@@ -415,12 +415,12 @@ None. No new Supabase tables or columns — reuses `integration_tokens` and `spr
 
 #### Automated
 
-- [ ] 6.1 Full suite passes: `npm run test`
-- [ ] 6.2 Type checking passes: `npm run typecheck`
-- [ ] 6.3 Linting passes: `npm run lint`
-- [ ] 6.4 Build succeeds: `npm run build`
+- [x] 6.1 Full suite passes: `npm run test`
+- [x] 6.2 Type checking passes: `npm run typecheck`
+- [x] 6.3 Linting passes: `npm run lint`
+- [x] 6.4 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 6.5 No new Supabase migration required (confirmed)
-- [ ] 6.6 No new runtime secrets required (confirmed)
+- [x] 6.5 No new Supabase migration required (confirmed — reuses `integration_tokens` and `sprint_invites`)
+- [x] 6.6 No new runtime secrets required (confirmed — reuses `TOKEN_ENCRYPTION_KEY`)
