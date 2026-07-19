@@ -362,29 +362,29 @@ Net-new table, no existing data to migrate. `sprint_invites` rows are never back
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npm run typecheck`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 Unit tests pass for start/callback routes
+- [x] 3.1 Type checking passes: `npm run typecheck` — 0552103
+- [x] 3.2 Linting passes: `npm run lint` — 0552103
+- [x] 3.3 Unit tests pass for start/callback routes — 0552103
 
 #### Manual
 
-- [x] 3.4 Landing page shows sprint/assignee context for a pending invite
-- [x] 3.5 Google consent completes and redirects to connected success state
-- [x] 3.6 Revisiting a consumed link shows "already used," not the connect button
-- [x] 3.7 Invalid token shows the invalid-link error state
+- [x] 3.4 Landing page shows sprint/assignee context for a pending invite — 0552103
+- [x] 3.5 Google consent completes and redirects to connected success state — 0552103
+- [x] 3.6 Revisiting a consumed link shows "already used," not the connect button — 0552103
+- [x] 3.7 Invalid token shows the invalid-link error state — 0552103
 
 ### Phase 4: Production readiness & verification
 
 #### Automated
 
-- [ ] 4.1 Full test suite passes: `npm run test`
-- [ ] 4.2 Type checking passes: `npm run typecheck`
-- [ ] 4.3 Linting passes: `npm run lint`
-- [ ] 4.4 Build succeeds: `npm run build`
+- [x] 4.1 Full test suite passes: `npm run test`
+- [x] 4.2 Type checking passes: `npm run typecheck`
+- [x] 4.3 Linting passes: `npm run lint`
+- [x] 4.4 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 4.5 Google Cloud Console consent-screen checklist completed (Calendar API enabled, scope added, test users added if in Testing mode)
+- [x] 4.5 Google Cloud Console consent-screen checklist completed (Calendar API enabled, scope added, test users added if in Testing mode)
 - [ ] 4.6 Hosted Supabase redirect URL configuration confirmed
 - [ ] 4.7 Migration applied to hosted database
 - [ ] 4.8 Full manual flow repeated against deployed Worker URL
