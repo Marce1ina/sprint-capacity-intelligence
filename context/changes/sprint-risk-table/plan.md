@@ -380,10 +380,10 @@ None. No new Supabase tables or columns — reuses `integration_tokens` and `spr
 
 #### Automated
 
-- [x] 3.1 Unit tests pass: `npm run test -- src/lib/services/risk-computation-service.test.ts`
-- [x] 3.2 Guardrail test passes with updated allowlist: `npm run test -- src/lib/service-role-boundary.test.ts`
-- [x] 3.3 Type checking passes: `npm run typecheck`
-- [x] 3.4 Linting passes: `npm run lint`
+- [x] 3.1 Unit tests pass: `npm run test -- src/lib/services/risk-computation-service.test.ts` — 4a2afda
+- [x] 3.2 Guardrail test passes with updated allowlist: `npm run test -- src/lib/service-role-boundary.test.ts` — 4a2afda
+- [x] 3.3 Type checking passes: `npm run typecheck` — 4a2afda
+- [x] 3.4 Linting passes: `npm run lint` — 4a2afda
 
 ### Phase 4: API route
 
