@@ -402,8 +402,8 @@ None. No new Supabase tables or columns — reuses `integration_tokens` and `spr
 
 #### Automated
 
-- [x] 5.1 Type checking passes: `npm run typecheck`
-- [x] 5.2 Linting passes: `npm run lint`
+- [x] 5.1 Type checking passes: `npm run typecheck` — cff1a4d
+- [x] 5.2 Linting passes: `npm run lint` — cff1a4d
 
 #### Manual
 
