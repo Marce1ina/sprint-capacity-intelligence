@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ServerError } from "@/components/auth/ServerError";
+import SprintRiskTable from "@/components/dashboard/SprintRiskTable";
 import { useJiraSprintPicker } from "@/components/hooks/use-jira-sprint-picker";
 import { cn } from "@/lib/utils";
 
@@ -119,7 +120,10 @@ export default function SprintPicker() {
             Select a board and sprint to view assignee workload.
           </p>
         ) : (
-          <AssigneeTable assignees={assignees} sprintId={selectedSprintId} />
+          <>
+            <AssigneeTable assignees={assignees} sprintId={selectedSprintId} />
+            <SprintRiskTable sprintId={selectedSprintId} />
+          </>
         )}
       </div>
     </div>
