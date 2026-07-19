@@ -372,9 +372,9 @@ None. No new Supabase tables or columns — reuses `integration_tokens` and `spr
 
 #### Automated
 
-- [x] 2.1 Unit tests pass: `npm run test -- src/lib/services/google-calendar-client.test.ts`
-- [x] 2.2 Type checking passes: `npm run typecheck`
-- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 Unit tests pass: `npm run test -- src/lib/services/google-calendar-client.test.ts` — c492276
+- [x] 2.2 Type checking passes: `npm run typecheck` — c492276
+- [x] 2.3 Linting passes: `npm run lint` — c492276
 
 ### Phase 3: Cross-user data assembly
 
